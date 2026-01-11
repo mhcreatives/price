@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitation Set Price Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f9f7f5;
+            color: #5a4d41;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #e8dfd6 0%, #d4c9bc 100%);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: #8b7355;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a08c72;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .calculator-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .calculator-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .options-panel {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-panel {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #8b7355;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e8dfd6;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: #b8a58b;
+        }
+
+        .option-group {
+            margin-bottom: 30px;
+        }
+
+        .option-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #7a6853;
+            font-size: 1.1rem;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .option-card {
+            border: 2px solid #e8dfd6;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .option-card:hover {
+            border-color: #b8a58b;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(184, 165, 139, 0.1);
+        }
+
+        .option-card.selected {
+            border-color: #8b7355;
+            background-color: rgba(139, 115, 85, 0.05);
+        }
+
+        .option-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #7a6853;
+        }
+
+        .option-price {
+            color: #8b7355;
+            font-weight: 700;
+        }
+
+        .slider-container {
+            padding: 0 10px;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-weight: 600;
+            margin-top: 10px;
+            color: #8b7355;
+            font-size: 1.2rem;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e8dfd6;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #8b7355;
+            cursor: pointer;
+        }
+
+        .price-display {
+            text-align: center;
+            margin: auto 0;
+            padding: 30px 0;
+        }
+
+        .total-price {
+            font-size: 4.5rem;
+            font-weight: 300;
+            color: #8b7355;
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .base-price {
+            color: #a08c72;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .price-breakdown {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dashed #e8dfd6;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding-top: 20px;
+            color: #7a6853;
+        }
+
+        .reset-button {
+            display: block;
+            width: 100%;
+            background-color: #e8dfd6;
+            color: #7a6853;
+            border: none;
+            padding: 15px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        .reset-button:hover {
+            background-color: #d4c9bc;
+        }
+
+        .summary {
+            background-color: rgba(139, 115, 85, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .summary-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #7a6853;
+        }
+
+        .summary-item {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .summary-item:last-child {
+            margin-bottom: 0;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e8dfd6;
+            color: #a08c72;
+            font-size: 0.9rem;
+        }
+
+        .print-button {
+            background-color: #8b7355;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .print-button:hover {
+            background-color: #7a6853;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Invitation Set Price Calculator</h1>
+            <p class="subtitle">Customize your perfect invitation set by selecting envelope type, number of inserts, paper type, and envelope seal. See the price update in real-time as you make your selections.</p>
+        </header>
+
+        <div class="calculator-wrapper">
+            <div class="options-panel">
+                <h2 class="section-title"><i class="fas fa-cog"></i> Customization Options</h2>
+                
+                <div class="option-group">
+                    <label class="option-label">1. Envelope Type</label>
+                    <div class="option-grid" id="envelope-options">
+                        <div class="option-card selected" data-value="standard" data-price="0">
+                            <div class="option-name">Standard Single</div>
+                            <div class="option-price">+ $0.00</div>
+                        </div>
+                        <div class="option-card" data-value="liner" data-price="0.75">
+                            <div class="option-name">With Liner</div>
+                            <div class="option-price">+ $0.75</div>
+                        </div>
+                        <div class="option-card" data-value="pocket" data-price="1.25">
+                            <div class="option-name">Pocket Style</div>
+                            <div class="option-price">+ $1.25</div>
+                        </div>
+                        <div class="option-card" data-value="custom" data-price="2.50">
+                            <div class="option-name">Custom Size/Shape</div>
+                            <div class="option-price">+ $2.50</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="option-group">
+                    <label class="option-label">2. Number of Inserts</label>
+                    <div class="slider-container">
+                        <input type="range" id="inserts-slider" min="0" max="5" value="0" step="1">
+                        <div class="slider-value" id="inserts-value">0 inserts (+ $0.00)</div>
+                    </div>
+                </div>
+
+                <div class="option-group">
+                    <label class="option-label">3. Paper Type</label>
+                    <div class="option-grid" id="paper-options">
+                        <div class="option-card selected" data-value="standard" data-price="0">
+                            <div class="option-name">Standard Cardstock</div>
+                            <div class="option-price">+ $0.00</div>
+                        </div>
+                        <div class="option-card" data-value="textured" data-price="0.50">
+                            <div class="option-name">Textured/Linen</div>
+                            <div class="option-price">+ $0.50</div>
+                        </div>
+                        <div class="option-card" data-value="metallic" data-price="1.00">
+                            <div class="option-name">Metallic Foil</div>
+                            <div class="option-price">+ $1.00</div>
+                        </div>
+                        <div class="option-card" data-value="recycled" data-price="0.75">
+                            <div class="option-name">Premium Recycled</div>
+                            <div class="option-price">+ $0.75</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="option-group">
+                    <label class="option-label">4. Envelope Seal</label>
+                    <div class="option-grid" id="seal-options">
+                        <div class="option-card selected" data-value="none" data-price="0">
+                            <div class="option-name">No Seal</div>
+                            <div class="option-price">+ $0.00</div>
+                        </div>
+                        <div class="option-card" data-value="wax" data-price="1.25">
+                            <div class="option-name">Custom Wax Seal</div>
+                            <div class="option-price">+ $1.25</div>
+                        </div>
+                        <div class="option-card" data-value="sticker" data-price="0.25">
+                            <div class="option-name">Decorative Sticker</div>
+                            <div class="option-price">+ $0.25</div>
+                        </div>
+                        <div class="option-card" data-value="printed" data-price="0.50">
+                            <div class="option-name">Printed Seal</div>
+                            <div class="option-price">+ $0.50</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="reset-button" id="reset-button">
+                    <i class="fas fa-redo-alt"></i> Reset All Options
+                </button>
+            </div>
+
+            <div class="result-panel">
+                <h2 class="section-title"><i class="fas fa-receipt"></i> Price Calculation</h2>
+                
+                <div class="price-display">
+                    <div class="total-price" id="total-price">$3.50</div>
+                    <div class="base-price">Base price: $3.50 per set</div>
+                    
+                    <div class="price-breakdown">
+                        <div class="breakdown-item">
+                            <span>Base Price:</span>
+                            <span>$3.50</span>
+                        </div>
+                        <div class="breakdown-item" id="envelope-breakdown">
+                            <span>Envelope Type:</span>
+                            <span>$0.00</span>
+                        </div>
+                        <div class="breakdown-item" id="inserts-breakdown">
+                            <span>Inserts (0):</span>
+                            <span>$0.00</span>
+                        </div>
+                        <div class="breakdown-item" id="paper-breakdown">
+                            <span>Paper Type:</span>
+                            <span>$0.00</span>
+                        </div>
+                        <div class="breakdown-item" id="seal-breakdown">
+                            <span>Envelope Seal:</span>
+                            <span>$0.00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Total per set:</span>
+                            <span id="final-price">$3.50</span>
+                        </div>
+                    </div>
+                    
+                    <button class="print-button" id="print-button">
+                        <i class="fas fa-print"></i> Print Quote
+                    </button>
+                </div>
+
+                <div class="summary">
+                    <div class="summary-title">Your Selections:</div>
+                    <div class="summary-item">
+                        <span>Envelope Type:</span>
+                        <span id="summary-envelope">Standard Single</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Number of Inserts:</span>
+                        <span id="summary-inserts">0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Paper Type:</span>
+                        <span id="summary-paper">Standard Cardstock</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Envelope Seal:</span>
+                        <span id="summary-seal">No Seal</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Invitation Set Price Calculator &copy; <span id="current-year">2023</span> | All prices are per invitation set</p>
+            <p>Note: Additional charges may apply for rush orders, special printing techniques, or custom artwork.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Base price for the invitation set
+        const BASE_PRICE = 3.50;
+        // Price per additional insert
+        const INSERT_PRICE = 0.75;
+        
+        // Current selections
+        let currentSelections = {
+            envelope: { value: "standard", price: 0, name: "Standard Single" },
+            inserts: { value: 0, price: 0 },
+            paper: { value: "standard", price: 0, name: "Standard Cardstock" },
+            seal: { value: "none", price: 0, name: "No Seal" }
+        };
+        
+        // Initialize the calculator
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current year in footer
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            // Set up event listeners for option cards
+            setupOptionCards('envelope-options', 'envelope');
+            setupOptionCards('paper-options', 'paper');
+            setupOptionCards('seal-options', 'seal');
+            
+            // Set up slider for inserts
+            const insertsSlider = document.getElementById('inserts-slider');
+            const insertsValue = document.getElementById('inserts-value');
+            
+            insertsSlider.addEventListener('input', function() {
+                const insertCount = parseInt(this.value);
+                const insertPrice = insertCount * INSERT_PRICE;
+                
+                // Update display
+                insertsValue.textContent = `${insertCount} insert${insertCount !== 1 ? 's' : ''} (+ $${insertPrice.toFixed(2)})`;
+                
+                // Update current selections
+                currentSelections.inserts.value = insertCount;
+                currentSelections.inserts.price = insertPrice;
+                
+                // Update summary
+                document.getElementById('summary-inserts').textContent = insertCount;
+                
+                // Recalculate price
+                calculateTotal();
+            });
+            
+            // Set up reset button
+            document.getElementById('reset-button').addEventListener('click', resetSelections);
+            
+            // Set up print button
+            document.getElementById('print-button').addEventListener('click', printQuote);
+            
+            // Initial calculation
+            calculateTotal();
+        });
+        
+        // Function to set up option card selections
+        function setupOptionCards(containerId, selectionType) {
+            const container = document.getElementById(containerId);
+            const optionCards = container.querySelectorAll('.option-card');
+            
+            optionCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all cards in this group
+                    optionCards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+                    
+                    // Get the value and price from data attributes
+                    const value = this.getAttribute('data-value');
+                    const price = parseFloat(this.getAttribute('data-price'));
+                    const name = this.querySelector('.option-name').textContent;
+                    
+                    // Update current selections
+                    currentSelections[selectionType] = {
+                        value: value,
+                        price: price,
+                        name: name
+                    };
+                    
+                    // Update summary
+                    document.getElementById(`summary-${selectionType}`).textContent = name;
+                    
+                    // Recalculate price
+                    calculateTotal();
+                });
+            });
+        }
+        
+        // Function to calculate total price
+        function calculateTotal() {
+            // Calculate sum of all components
+            const envelopePrice = currentSelections.envelope.price;
+            const insertsPrice = currentSelections.inserts.price;
+            const paperPrice = currentSelections.paper.price;
+            const sealPrice = currentSelections.seal.price;
+            
+            const total = BASE_PRICE + envelopePrice + insertsPrice + paperPrice + sealPrice;
+            
+            // Update total price display
+            document.getElementById('total-price').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('final-price').textContent = `$${total.toFixed(2)}`;
+            
+            // Update breakdown items
+            document.getElementById('envelope-breakdown').innerHTML = 
+                `<span>Envelope Type:</span> <span>$${envelopePrice.toFixed(2)}</span>`;
+                
+            document.getElementById('inserts-breakdown').innerHTML = 
+                `<span>Inserts (${currentSelections.inserts.value}):</span> <span>$${insertsPrice.toFixed(2)}</span>`;
+                
+            document.getElementById('paper-breakdown').innerHTML = 
+                `<span>Paper Type:</span> <span>$${paperPrice.toFixed(2)}</span>`;
+                
+            document.getElementById('seal-breakdown').innerHTML = 
+                `<span>Envelope Seal:</span> <span>$${sealPrice.toFixed(2)}</span>`;
+        }
+        
+        // Function to reset all selections to defaults
+        function resetSelections() {
+            // Reset envelope selection
+            const envelopeCards = document.querySelectorAll('#envelope-options .option-card');
+            envelopeCards.forEach(card => card.classList.remove('selected'));
+            envelopeCards[0].classList.add('selected');
+            currentSelections.envelope = { value: "standard", price: 0, name: "Standard Single" };
+            
+            // Reset inserts slider
+            document.getElementById('inserts-slider').value = 0;
+            document.getElementById('inserts-value').textContent = '0 inserts (+ $0.00)';
+            currentSelections.inserts = { value: 0, price: 0 };
+            
+            // Reset paper selection
+            const paperCards = document.querySelectorAll('#paper-options .option-card');
+            paperCards.forEach(card => card.classList.remove('selected'));
+            paperCards[0].classList.add('selected');
+            currentSelections.paper = { value: "standard", price: 0, name: "Standard Cardstock" };
+            
+            // Reset seal selection
+            const sealCards = document.querySelectorAll('#seal-options .option-card');
+            sealCards.forEach(card => card.classList.remove('selected'));
+            sealCards[0].classList.add('selected');
+            currentSelections.seal = { value: "none", price: 0, name: "No Seal" };
+            
+            // Update summary
+            document.getElementById('summary-envelope').textContent = "Standard Single";
+            document.getElementById('summary-inserts').textContent = "0";
+            document.getElementById('summary-paper').textContent = "Standard Cardstock";
+            document.getElementById('summary-seal').textContent = "No Seal";
+            
+            // Recalculate price
+            calculateTotal();
+            
+            // Show confirmation
+            alert("All selections have been reset to default values.");
+        }
+        
+        // Function to print a quote
+        function printQuote() {
+            // Create a printable version
+            const printContent = `
+                <html>
+                <head>
+                    <title>Invitation Set Quote</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        h1 { color: #8b7355; }
+                        .section { margin-bottom: 20px; }
+                        .total { font-size: 24px; font-weight: bold; margin-top: 30px; }
+                        .breakdown { margin: 20px 0; }
+                        .breakdown-item { display: flex; justify-content: space-between; margin-bottom: 8px; }
+                        .footer { margin-top: 40px; font-size: 12px; color: #777; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Invitation Set Quote</h1>
+                    <p>Generated on ${new Date().toLocaleDateString()}</p>
+                    
+                    <div class="section">
+                        <h3>Your Selections:</h3>
+                        <p><strong>Envelope Type:</strong> ${currentSelections.envelope.name}</p>
+                        <p><strong>Number of Inserts:</strong> ${currentSelections.inserts.value}</p>
+                        <p><strong>Paper Type:</strong> ${currentSelections.paper.name}</p>
+                        <p><strong>Envelope Seal:</strong> ${currentSelections.seal.name}</p>
+                    </div>
+                    
+                    <div class="breakdown">
+                        <h3>Price Breakdown:</h3>
+                        <div class="breakdown-item">
+                            <span>Base Price:</span>
+                            <span>$${BASE_PRICE.toFixed(2)}</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Envelope Type:</span>
+                            <span>$${currentSelections.envelope.price.toFixed(2)}</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Inserts (${currentSelections.inserts.value}):</span>
+                            <span>$${currentSelections.inserts.price.toFixed(2)}</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Paper Type:</span>
+                            <span>$${currentSelections.paper.price.toFixed(2)}</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Envelope Seal:</span>
+                            <span>$${currentSelections.seal.price.toFixed(2)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="total">
+                        Total per invitation set: $${(BASE_PRICE + currentSelections.envelope.price + currentSelections.inserts.price + currentSelections.paper.price + currentSelections.seal.price).toFixed(2)}
+                    </div>
+                    
+                    <div class="footer">
+                        <p>This quote is valid for 30 days. Additional charges may apply for rush orders, special printing techniques, or custom artwork.</p>
+                        <p>Generated by Invitation Set Price Calculator</p>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            // Open print window
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.focus();
+            
+            // Wait for content to load, then print
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
+        }
+    </script>
+</body>
+</html>
