@@ -52,9 +52,12 @@
         .action-button:hover { background-color: #e5e5e5; border-color: #999999; }
         .copy-button { background-color: #333333; color: white; border: 1px solid #333333; width: 100%; margin-top: 15px; padding: 10px; height: 44px; font-size: 0.9rem; }
         .copy-button:hover { background-color: #444444; }
+        .copy-price-button { background-color: #666666; color: white; border: 1px solid #666666; width: 100%; margin-top: 10px; padding: 10px; height: 44px; font-size: 0.9rem; }
+        .copy-price-button:hover { background-color: #777777; }
         .summary-container { flex-grow: 1; }
         .event-type-title { font-size: 1.2rem; font-weight: 500; color: #333333; margin-bottom: 8px; text-align: center; }
-        .event-date-line { color: #666666; font-size: 0.95rem; text-align: center; margin-bottom: 20px; }
+        .event-date-line { color: #666666; font-size: 0.95rem; text-align: center; margin-bottom: 5px; }
+        .payment-method-line { color: #666666; font-size: 0.95rem; text-align: center; margin-bottom: 20px; }
         .price-per-set { font-size: 2.2rem; font-weight: 300; color: #333333; margin-bottom: 20px; text-align: center; line-height: 1; }
         .summary-details { margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px; }
         .summary-line { margin-bottom: 8px; font-size: 0.95rem; line-height: 1.4; }
@@ -62,6 +65,10 @@
         .sets-total { margin-top: 20px; padding-top: 15px; border-top: 1px solid #cccccc; font-weight: 600; font-size: 1.1rem; text-align: center; color: #333333; }
         .one-time-fees { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #cccccc; }
         .final-total { margin-top: 20px; padding-top: 15px; border-top: 2px solid #333333; font-weight: 600; font-size: 1.3rem; text-align: center; color: #333333; }
+        .payment-methods-section { margin-top: 20px; padding-top: 15px; border-top: 1px solid #cccccc; }
+        .payment-method-option { margin-bottom: 10px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; background-color: #f9f9f9; }
+        .payment-method-title { font-weight: 600; margin-bottom: 5px; color: #333333; }
+        .payment-method-details { font-size: 0.9rem; line-height: 1.4; }
         footer { text-align: center; margin-top: 25px; padding-top: 12px; border-top: 1px solid #e0e0e0; color: #666666; font-size: 0.8rem; }
         .notification { position: fixed; top: 20px; right: 20px; background-color: #333333; color: white; padding: 10px 16px; border-radius: 4px; font-size: 0.85rem; opacity: 0; transform: translateY(-10px); transition: opacity 0.3s, transform 0.3s; z-index: 1000; }
         .notification.show { opacity: 1; transform: translateY(0); }
@@ -161,6 +168,31 @@
                         </select>
                     </div>
                 </div>
+                
+                <!-- Payment Method Section -->
+                <div class="option-group">
+                    <label class="option-label">Payment Method</label>
+                    <div class="option-grid" id="payment-method-options">
+                        <div class="option-card" data-value="none"><div class="option-name">Show All</div></div>
+                        <div class="option-card selected" data-value="direct-shipping"><div class="option-name">Direct shipping</div></div>
+                        <div class="option-card" data-value="shopee-checkout"><div class="option-name">Shopee checkout</div></div>
+                        <div class="option-card" data-value="shopee-checkout-full"><div class="option-name">Shopee checkout full payment</div></div>
+                    </div>
+                </div>
+                
+                <!-- Location Section -->
+                <div class="option-group">
+                    <label class="option-label">Location</label>
+                    <select class="select-input" id="location-select">
+                        <option value="ncr">NCR</option>
+                        <option value="north-luzon">North Luzon</option>
+                        <option value="central-luzon">Central Luzon</option>
+                        <option value="south-luzon">South Luzon</option>
+                        <option value="visayas">Visayas</option>
+                        <option value="mindanao">Mindanao</option>
+                    </select>
+                </div>
+                
                 <div class="input-row">
                     <div class="input-group"><label class="input-label">Number of Sets</label><input type="number" class="text-input" id="sets-input" min="1" max="1000" value="20"></div>
                     <div class="input-group"><label class="input-label">Event Date</label><input type="date" class="date-input" id="event-date-input"></div>
@@ -175,6 +207,7 @@
                     <h2 class="section-title">Quotation Summary</h2>
                     <div class="event-type-title" id="event-type-title">Wedding invitation</div>
                     <div class="event-date-line" id="event-date-display">Event Date: Not specified</div>
+                    <div class="payment-method-line" id="payment-method-display"></div>
                     <div class="price-per-set" id="price-per-set">₱25 each</div>
                     <div class="summary-details">
                         <div class="summary-line" id="summary-size-line">4R size</div>
@@ -187,7 +220,9 @@
                         <div class="one-time-fees" id="one-time-fees"></div>
                     </div>
                     <div class="final-total" id="final-total">Total: ₱500</div>
+                    <div class="payment-methods-section" id="payment-methods-section"></div>
                     <button class="copy-button" id="copy-button"><i class="fas fa-copy"></i> Copy Quotation Summary</button>
+                    <button class="copy-price-button" id="copy-price-button"><i class="fas fa-copy"></i> Copy Price Summary</button>
                 </div>
             </div>
         </div>
@@ -197,6 +232,7 @@
         </footer>
     </div>
     <div class="notification" id="notification">Quotation copied to clipboard!</div>
+    <div class="notification" id="price-notification" style="top: 70px;">Price summary copied to clipboard!</div>
     <script>
         const BASE_PRICE = 25;
         const INSERT_PRICE = 5;
@@ -209,6 +245,8 @@
             seal: { value: "no-seal", price: 0, name: "No seal" },
             layout: { required: false, type: "no-layout", pages: 1 },
             rush: { required: false, type: "no-layout" },
+            paymentMethod: "none", // none, direct-shipping, shopee-checkout, shopee-checkout-full
+            location: "ncr",
             addons: {}
         };
         let numberOfSets = 20;
@@ -239,7 +277,11 @@
             { id: 'sticker-names', name: 'Sticker names', price: 10, unit: 'piece' },
             { id: 'calendar-foil', name: 'Calendar foil', price: 25, unit: 'flat' },
             { id: 'folded-insert', name: 'Folded insert', price: 5, unit: 'flat' },
-            { id: 'trifold-insert', name: 'Trifold insert', price: 10, unit: 'flat' }
+            { id: 'trifold-insert', name: 'Trifold insert', price: 10, unit: 'flat' },
+            { id: 'liner', name: 'Liner', price: 20, unit: 'flat' },
+            { id: 'arc-cut', name: 'Arc cut', price: 5, unit: 'page' },
+            { id: 'gold-foil', name: 'Gold foil', price: 15, unit: 'page' },
+            { id: 'gold-foil-full-page', name: 'Gold foil full page', price: 20, unit: 'page' }
         ];
         
         // List of flat add-ons that should be included in price per set (excluding Map layout)
@@ -250,8 +292,19 @@
             'ribbon-addon',
             'calendar-foil',
             'folded-insert',
-            'trifold-insert'
+            'trifold-insert',
+            'liner' // Added Liner to price per set
         ];
+        
+        // Location display names
+        const locationNames = {
+            'ncr': 'NCR',
+            'north-luzon': 'North Luzon',
+            'central-luzon': 'Central Luzon',
+            'south-luzon': 'South Luzon',
+            'visayas': 'Visayas',
+            'mindanao': 'Mindanao'
+        };
         
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('current-year').textContent = new Date().getFullYear();
@@ -267,6 +320,7 @@
             setupOptionCards('envelope-options', 'envelope');
             setupOptionCards('paper-options', 'paper');
             setupOptionCards('seal-options', 'seal');
+            setupOptionCards('payment-method-options', 'paymentMethod', false, true);
             
             // Initialize add-ons
             initializeAddons();
@@ -309,12 +363,41 @@
                 updateSummary();
             });
             
+            document.getElementById('location-select').addEventListener('change', function() {
+                currentSelections.location = this.value;
+                updateSummary();
+            });
+            
             document.getElementById('reset-button').addEventListener('click', resetSelections);
             document.getElementById('print-button').addEventListener('click', printQuote);
             document.getElementById('copy-button').addEventListener('click', copyQuotation);
+            document.getElementById('copy-price-button').addEventListener('click', copyPriceSummary);
             
             updateSummary();
         });
+        
+        function setupOptionCards(containerId, selectionType, isEventType = false, isPaymentMethod = false) {
+            const container = document.getElementById(containerId);
+            const optionCards = container.querySelectorAll('.option-card');
+            optionCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    optionCards.forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    const value = this.getAttribute('data-value');
+                    
+                    if (isPaymentMethod) {
+                        currentSelections[selectionType] = value;
+                    } else {
+                        const price = parseInt(this.getAttribute('data-price'));
+                        const name = this.querySelector('.option-name').textContent;
+                        currentSelections[selectionType] = { value: value, price: price, name: name };
+                    }
+                    
+                    if (isEventType) updateEventTypeTitle();
+                    updateSummary();
+                });
+            });
+        }
         
         function initializeAddons() {
             const addonsGrid = document.getElementById('addons-grid');
@@ -371,23 +454,6 @@
             });
         }
         
-        function setupOptionCards(containerId, selectionType, isEventType = false) {
-            const container = document.getElementById(containerId);
-            const optionCards = container.querySelectorAll('.option-card');
-            optionCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    optionCards.forEach(c => c.classList.remove('selected'));
-                    this.classList.add('selected');
-                    const value = this.getAttribute('data-value');
-                    const price = parseInt(this.getAttribute('data-price'));
-                    const name = this.querySelector('.option-name').textContent;
-                    currentSelections[selectionType] = { value: value, price: price, name: name };
-                    if (isEventType) updateEventTypeTitle();
-                    updateSummary();
-                });
-            });
-        }
-        
         function updateEventTypeTitle() {
             const eventType = currentSelections.eventType.name;
             const title = eventType === "Special event" ? "Special event invitation" : `${eventType} invitation`;
@@ -418,9 +484,9 @@
                     summaryHTML += `<div class="summary-line">${addon.name}</div>`;
                 } else if (addon.unit === 'page' || addon.unit === 'piece') {
                     addonTotal = addon.price * addon.quantity * numberOfSets;
-                    // Format: "X page(s)/item(s) Addon Name" with correct grammar
+                    // Format: "X page(s)/pc(s) Addon Name" with correct grammar
                     const unitText = addon.unit === 'page' ? (addon.quantity === 1 ? 'page' : 'pages') : 
-                                    (addon.quantity === 1 ? 'item' : 'items');
+                                    (addon.quantity === 1 ? 'pc' : 'pcs'); // Changed from item/items to pc/pcs
                     summaryHTML += `<div class="summary-line">${addon.quantity} ${unitText} ${addon.name}</div>`;
                 }
                 
@@ -429,6 +495,34 @@
             
             document.getElementById('addons-summary').innerHTML = summaryHTML;
             return total;
+        }
+        
+        function calculateShippingFee(totalAmount) {
+            if (totalAmount >= 3000) {
+                return 0; // FREE shipping
+            } else if (totalAmount >= 2000) {
+                return 50; // ₱50 shipping
+            } else {
+                return 100; // ₱100 shipping
+            }
+        }
+        
+        function calculateFreeSetsForDirectShipping(setsCount) {
+            if (setsCount >= 100) {
+                return Math.floor(setsCount / 20);
+            } else if (setsCount >= 75) {
+                return 3;
+            } else if (setsCount >= 50) {
+                return 2;
+            } else if (setsCount >= 30) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        
+        function roundToWholeNumber(amount) {
+            return Math.round(amount);
         }
         
         function updateSummary() {
@@ -566,6 +660,83 @@
             }
             
             document.getElementById('final-total').innerHTML = `Total: ₱${finalTotal}`;
+            
+            // Update payment methods section
+            updatePaymentMethods(finalTotal, setsTotal, oneTimeFeesTotal);
+        }
+        
+        function updatePaymentMethods(finalTotal, setsTotal, oneTimeFeesTotal) {
+            const paymentMethodsSection = document.getElementById('payment-methods-section');
+            const locationName = locationNames[currentSelections.location];
+            const shippingFee = calculateShippingFee(finalTotal);
+            const freeSets = calculateFreeSetsForDirectShipping(numberOfSets);
+            
+            let paymentMethodsHTML = '';
+            
+            // Calculate downpayment (50% of sets total + one-time fees)
+            const downpayment = roundToWholeNumber((setsTotal + oneTimeFeesTotal) / 2);
+            const balance = finalTotal - downpayment;
+            const shopeeCOD = roundToWholeNumber(balance * 1.15); // 15% additional for COD
+            
+            // Show payment methods based on selection
+            if (currentSelections.paymentMethod === "none") {
+                // Show both Direct Shipping and Shopee Checkout
+                paymentMethodsHTML += `
+                    <div class="payment-method-option">
+                        <div class="payment-method-title">Direct shipping</div>
+                        <div class="payment-method-details">
+                            Payment: ₱${finalTotal}<br>
+                            ${freeSets > 0 ? `FREE ${freeSets} set${freeSets > 1 ? 's' : ''}<br>` : ''}
+                            ${shippingFee > 0 ? `+ ₱${shippingFee} Shipping fee` : 'FREE Shipping'}
+                        </div>
+                    </div>
+                    <div class="payment-method-option">
+                        <div class="payment-method-title">Shopee Checkout (15% add)</div>
+                        <div class="payment-method-details">
+                            Downpayment: ₱${downpayment}<br>
+                            COD: ₱${shopeeCOD} ${shippingFee > 0 ? `+ shipping fee` : ''}
+                        </div>
+                    </div>
+                `;
+            } else if (currentSelections.paymentMethod === "direct-shipping") {
+                // Show only Direct Shipping
+                paymentMethodsHTML += `
+                    <div class="payment-method-option">
+                        <div class="payment-method-title">Direct shipping</div>
+                        <div class="payment-method-details">
+                            Payment: ₱${finalTotal}<br>
+                            ${freeSets > 0 ? `FREE ${freeSets} set${freeSets > 1 ? 's' : ''}<br>` : ''}
+                            ${shippingFee > 0 ? `+ ₱${shippingFee} Shipping fee` : 'FREE Shipping'}
+                        </div>
+                    </div>
+                `;
+            } else if (currentSelections.paymentMethod === "shopee-checkout") {
+                // Show only Shopee Checkout (COD)
+                paymentMethodsHTML += `
+                    <div class="payment-method-option">
+                        <div class="payment-method-title">Shopee Checkout (15% add)</div>
+                        <div class="payment-method-details">
+                            Downpayment: ₱${downpayment}<br>
+                            COD: ₱${shopeeCOD} ${shippingFee > 0 ? `+ shipping fee` : ''}
+                        </div>
+                    </div>
+                `;
+            } else if (currentSelections.paymentMethod === "shopee-checkout-full") {
+                // Show only Shopee Checkout Full Payment
+                paymentMethodsHTML += `
+                    <div class="payment-method-option">
+                        <div class="payment-method-title">Shopee Checkout Full Payment</div>
+                        <div class="payment-method-details">
+                            Full Payment: ₱${finalTotal} ${shippingFee > 0 ? `+ shipping fee` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Add location
+            paymentMethodsHTML += `<div class="payment-method-details" style="margin-top: 10px; font-weight: 500;">Location: ${locationName}</div>`;
+            
+            paymentMethodsSection.innerHTML = paymentMethodsHTML;
         }
         
         function resetSelections() {
@@ -616,6 +787,16 @@
             currentSelections.layout = { required: false, type: "no-layout", pages: 1 };
             currentSelections.rush = { required: false, type: "no-layout" };
             
+            // Reset payment method
+            const paymentMethodCards = document.querySelectorAll('#payment-method-options .option-card');
+            paymentMethodCards.forEach(card => card.classList.remove('selected'));
+            paymentMethodCards[0].classList.add('selected');
+            currentSelections.paymentMethod = "none";
+            
+            // Reset location
+            document.getElementById('location-select').value = "ncr";
+            currentSelections.location = "ncr";
+            
             document.getElementById('sets-input').value = 20;
             numberOfSets = 20;
             
@@ -628,6 +809,67 @@
             
             updateSummary();
             alert("All selections have been reset to default values.");
+        }
+        
+        function copyPriceSummary() {
+            // Get price per set
+            const totalPerSet = parseInt(document.getElementById('price-per-set').textContent.replace('₱', '').replace(' each', ''));
+            
+            // Get all inclusions
+            const sizeText = document.getElementById('summary-size-line').textContent;
+            const envelopeText = document.getElementById('summary-envelope-line').textContent;
+            const insertsText = document.getElementById('summary-inserts-line').textContent;
+            const paperText = document.getElementById('summary-paper-line').textContent;
+            const sealText = document.getElementById('summary-seal-line').textContent;
+            
+            // Get add-ons summary (included in price per set)
+            let addonsInPricePerSet = '';
+            const addonsSummaryElement = document.getElementById('addons-summary');
+            if (addonsSummaryElement.children.length > 0) {
+                // Get only add-ons that are included in price per set
+                Object.keys(currentSelections.addons).forEach(addonId => {
+                    const addon = currentSelections.addons[addonId];
+                    
+                    if (addonId === 'map-layout') {
+                        // Map layout is NOT included in price per set
+                        return;
+                    }
+                    
+                    if (addon.unit === 'flat') {
+                        // Check if this flat add-on should be included in price per set
+                        if (flatAddonsInPricePerSet.includes(addonId)) {
+                            // These flat add-ons are included in price per set
+                            addonsInPricePerSet += `${addon.name}\n`;
+                        }
+                    } else {
+                        // For per-page/per-piece add-ons, add their price to price per set
+                        // Format: "X page(s)/pc(s) Addon Name" with correct grammar
+                        const unitText = addon.unit === 'page' ? (addon.quantity === 1 ? 'page' : 'pages') : 
+                                        (addon.quantity === 1 ? 'pc' : 'pcs'); // Changed from item/items to pc/pcs
+                        addonsInPricePerSet += `${addon.quantity} ${unitText} ${addon.name}\n`;
+                    }
+                });
+            }
+            
+            let priceSummaryText = `₱${totalPerSet} each\n\n`;
+            priceSummaryText += `${sizeText}\n`;
+            priceSummaryText += `${envelopeText}\n`;
+            priceSummaryText += `${insertsText}\n`;
+            priceSummaryText += `${paperText}\n`;
+            priceSummaryText += `${sealText}\n`;
+            
+            if (addonsInPricePerSet) {
+                priceSummaryText += `\n${addonsInPricePerSet}`;
+            }
+            
+            navigator.clipboard.writeText(priceSummaryText).then(() => {
+                const notification = document.getElementById('price-notification');
+                notification.classList.add('show');
+                setTimeout(() => notification.classList.remove('show'), 3000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy price summary to clipboard. Please try again.');
+            });
         }
         
         function copyQuotation() {
@@ -647,9 +889,9 @@
                     // Show all flat add-ons in the main summary
                     addonsSummary += `${addon.name}\n`;
                 } else if (addon.unit === 'page' || addon.unit === 'piece') {
-                    // Format: "X page(s)/item(s) Addon Name" with correct grammar
+                    // Format: "X page(s)/pc(s) Addon Name" with correct grammar
                     const unitText = addon.unit === 'page' ? (addon.quantity === 1 ? 'page' : 'pages') : 
-                                    (addon.quantity === 1 ? 'item' : 'items');
+                                    (addon.quantity === 1 ? 'pc' : 'pcs'); // Changed from item/items to pc/pcs
                     addonsSummary += `${addon.quantity} ${unitText} ${addon.name}\n`;
                 }
             });
@@ -753,6 +995,13 @@
             
             const finalTotal = setsTotal + oneTimeFeesTotal;
             
+            // Calculate payment details
+            const shippingFee = calculateShippingFee(finalTotal);
+            const freeSets = calculateFreeSetsForDirectShipping(numberOfSets);
+            const downpayment = roundToWholeNumber((setsTotal + oneTimeFeesTotal) / 2);
+            const balance = finalTotal - downpayment;
+            const shopeeCOD = roundToWholeNumber(balance * 1.15); // 15% additional for COD
+            
             const eventType = currentSelections.eventType.name;
             const eventTitle = eventType === "Special event" ? "Special event invitation" : `${eventType} invitation`;
             
@@ -780,6 +1029,37 @@ ${currentSelections.seal.name}`;
             if (oneTimeFeesText) quotationText += `\n\n${oneTimeFeesText}`;
             
             quotationText += `\nTotal: ₱${finalTotal}`;
+            
+            // Add payment methods based on selection
+            quotationText += `\n\nPayment method\n`;
+            
+            if (currentSelections.paymentMethod === "none") {
+                // Show both Direct Shipping and Shopee Checkout
+                quotationText += `\nDirect shipping
+Payment: ₱${finalTotal}
+${freeSets > 0 ? `FREE ${freeSets} set${freeSets > 1 ? 's' : ''}\n` : ''}${shippingFee > 0 ? `+ ₱${shippingFee} Shipping fee` : 'FREE Shipping'}
+
+Shopee Checkout (15% add)
+Downpayment: ₱${downpayment}
+COD: ₱${shopeeCOD} ${shippingFee > 0 ? `+ shipping fee` : ''}`;
+            } else if (currentSelections.paymentMethod === "direct-shipping") {
+                // Show only Direct Shipping
+                quotationText += `\nDirect shipping
+Payment: ₱${finalTotal}
+${freeSets > 0 ? `FREE ${freeSets} set${freeSets > 1 ? 's' : ''}\n` : ''}${shippingFee > 0 ? `+ ₱${shippingFee} Shipping fee` : 'FREE Shipping'}`;
+            } else if (currentSelections.paymentMethod === "shopee-checkout") {
+                // Show only Shopee Checkout (COD)
+                quotationText += `\nShopee Checkout (15% add)
+Downpayment: ₱${downpayment}
+COD: ₱${shopeeCOD} ${shippingFee > 0 ? `+ shipping fee` : ''}`;
+            } else if (currentSelections.paymentMethod === "shopee-checkout-full") {
+                // Show only Shopee Checkout Full Payment
+                quotationText += `\nShopee Checkout Full Payment
+Full Payment: ₱${finalTotal} ${shippingFee > 0 ? `+ shipping fee` : ''}`;
+            }
+            
+            // Add location
+            quotationText += `\n\nLocation: ${locationNames[currentSelections.location]}`;
             
             navigator.clipboard.writeText(quotationText).then(() => {
                 const notification = document.getElementById('notification');
