@@ -39,6 +39,9 @@
         .layout-rush-row { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; margin-bottom: 10px; padding: 10px; background-color: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px; }
         .layout-rush-checkbox { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
         .layout-rush-checkbox input { margin: 0; }
+        .discount-checkbox-row { margin-top: 10px; padding: 10px; background-color: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px; }
+        .discount-checkbox { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .discount-checkbox input { margin: 0; }
         .addon-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .addon-item { display: flex; flex-direction: column; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; background-color: #f9f9f9; height: 100%; }
         .addon-header { display: flex; align-items: flex-start; margin-bottom: 8px; }
@@ -55,23 +58,24 @@
         .copy-price-button { background-color: #666666; color: white; border: 1px solid #666666; width: 100%; margin-top: 10px; padding: 10px; height: 44px; font-size: 0.9rem; }
         .copy-price-button:hover { background-color: #777777; }
         .summary-container { flex-grow: 1; }
-        .event-type-title { font-size: 1.2rem; font-weight: 500; color: #333333; margin-bottom: 8px; text-align: center; }
-        .event-date-line { color: #666666; font-size: 0.95rem; text-align: center; margin-bottom: 5px; }
-        .payment-method-line { color: #666666; font-size: 0.95rem; text-align: center; margin-bottom: 20px; }
-        .price-per-set { font-size: 2.2rem; font-weight: 300; color: #333333; margin-bottom: 20px; text-align: center; line-height: 1; }
-        .summary-details { margin-bottom: 20px; padding: 15px; background-color: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px; }
-        .summary-line { margin-bottom: 8px; font-size: 0.95rem; line-height: 1.4; }
-        .addons-summary { margin-top: 10px; }
-        .sets-total { margin-top: 20px; padding-top: 15px; border-top: 1px solid #cccccc; font-weight: 600; font-size: 1.1rem; text-align: center; color: #333333; }
-        .one-time-fees { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #cccccc; }
-        .final-total { margin-top: 20px; padding-top: 15px; border-top: 2px solid #333333; font-weight: 600; font-size: 1.3rem; text-align: center; color: #333333; }
-        .payment-methods-section { margin-top: 20px; padding-top: 15px; border-top: 1px solid #cccccc; }
-        .payment-method-option { margin-bottom: 10px; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; background-color: #f9f9f9; }
-        .payment-method-title { font-weight: 600; margin-bottom: 5px; color: #333333; }
-        .payment-method-details { font-size: 0.9rem; line-height: 1.4; }
+        .event-type-title { font-size: 1.2rem; font-weight: 500; color: #333333; margin-bottom: 5px; text-align: center; }
+        .event-date-line { color: #666666; font-size: 0.9rem; text-align: center; margin-bottom: 3px; }
+        .payment-method-line { color: #666666; font-size: 0.9rem; text-align: center; margin-bottom: 15px; }
+        .price-per-set { font-size: 2.2rem; font-weight: 300; color: #333333; margin-bottom: 15px; text-align: center; line-height: 1; }
+        .summary-details { margin-bottom: 15px; padding: 12px; background-color: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px; }
+        .summary-line { margin-bottom: 4px; font-size: 0.9rem; line-height: 1.3; }
+        .addons-summary { margin-top: 8px; }
+        .sets-total { margin-top: 15px; padding-top: 10px; border-top: 1px solid #cccccc; font-weight: 600; font-size: 1rem; text-align: center; color: #333333; }
+        .one-time-fees { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #cccccc; }
+        .final-total { margin-top: 15px; padding-top: 12px; border-top: 2px solid #333333; font-weight: 600; font-size: 1.2rem; text-align: center; color: #333333; }
+        .payment-methods-section { margin-top: 15px; padding-top: 12px; border-top: 1px solid #cccccc; }
+        .payment-method-option { margin-bottom: 8px; padding: 8px; border: 1px solid #e0e0e0; border-radius: 4px; background-color: #f9f9f9; }
+        .payment-method-title { font-weight: 600; margin-bottom: 3px; color: #333333; font-size: 0.9rem; }
+        .payment-method-details { font-size: 0.85rem; line-height: 1.3; }
         footer { text-align: center; margin-top: 25px; padding-top: 12px; border-top: 1px solid #e0e0e0; color: #666666; font-size: 0.8rem; }
         .notification { position: fixed; top: 20px; right: 20px; background-color: #333333; color: white; padding: 10px 16px; border-radius: 4px; font-size: 0.85rem; opacity: 0; transform: translateY(-10px); transition: opacity 0.3s, transform 0.3s; z-index: 1000; }
         .notification.show { opacity: 1; transform: translateY(0); }
+        .section-divider { height: 1px; background-color: #e0e0e0; margin: 20px 0; }
     </style>
 </head>
 <body>
@@ -135,6 +139,8 @@
                         <div class="option-card" data-value="belt-print" data-price="10"><div class="option-name">Belt with print</div></div>
                         <div class="option-card" data-value="frosted-belt" data-price="10"><div class="option-name">Frosted belt</div></div>
                         <div class="option-card" data-value="ribbon" data-price="10"><div class="option-name">Ribbon</div></div>
+                        <div class="option-card" data-value="printed-tag" data-price="0"><div class="option-name">Printed tag</div></div>
+                        <div class="option-card" data-value="jute-string" data-price="5"><div class="option-name">Jute string</div></div>
                         <div class="option-card" data-value="wax-seal-flower" data-price="15"><div class="option-name">Wax seal with flower</div></div>
                         <div class="option-card" data-value="frosted-belt-print" data-price="15"><div class="option-name">Frosted belt with print</div></div>
                         <div class="option-card" data-value="frayed-ribbon" data-price="15"><div class="option-name">Frayed ribbon</div></div>
@@ -150,6 +156,10 @@
                     </div>
                 </div>
                 
+                <div class="section-divider"></div>
+                
+                <!-- Layout & Rush Section -->
+                <h2 class="section-title">Order Details</h2>
                 <div class="layout-rush-section">
                     <label class="option-label">Layout Selection</label>
                     <div class="layout-rush-row">
@@ -166,6 +176,9 @@
                             <option value="no-layout">No layout</option>
                             <option value="own-layout">Own layout</option>
                         </select>
+                    </div>
+                    <div class="discount-checkbox-row">
+                        <div class="discount-checkbox"><input type="checkbox" id="discount-checkbox"><label for="discount-checkbox">Discount (Remove free sets, pay less but receive same quantity)</label></div>
                     </div>
                 </div>
                 
@@ -184,6 +197,7 @@
                 <div class="option-group">
                     <label class="option-label">Location</label>
                     <select class="select-input" id="location-select">
+                        <option value="">Select location</option>
                         <option value="ncr">NCR</option>
                         <option value="north-luzon">North Luzon</option>
                         <option value="central-luzon">Central Luzon</option>
@@ -206,7 +220,7 @@
                 <div class="summary-container">
                     <h2 class="section-title">Quotation Summary</h2>
                     <div class="event-type-title" id="event-type-title">Wedding invitation</div>
-                    <div class="event-date-line" id="event-date-display">Event Date: Not specified</div>
+                    <div class="event-date-line" id="event-date-display"></div>
                     <div class="payment-method-line" id="payment-method-display"></div>
                     <div class="price-per-set" id="price-per-set">₱25 each</div>
                     <div class="summary-details">
@@ -216,8 +230,8 @@
                         <div class="summary-line" id="summary-paper-line">Matte paper</div>
                         <div class="summary-line" id="summary-seal-line">No seal</div>
                         <div class="addons-summary" id="addons-summary"></div>
-                        <div class="sets-total" id="sets-total">20 sets x ₱25 each = ₱500</div>
                         <div class="one-time-fees" id="one-time-fees"></div>
+                        <div class="sets-total" id="sets-total">20 sets x ₱25 each = ₱500</div>
                     </div>
                     <div class="final-total" id="final-total">Total: ₱500</div>
                     <div class="payment-methods-section" id="payment-methods-section"></div>
@@ -246,8 +260,9 @@
             layout: { required: false, type: "no-layout", pages: 1 },
             rush: { required: false, type: "no-layout" },
             paymentMethod: "none", // none, direct-shipping, shopee-checkout, shopee-checkout-full
-            location: "ncr",
-            addons: {}
+            location: "",
+            addons: {},
+            discount: false
         };
         let numberOfSets = 20;
         let eventDate = "";
@@ -281,7 +296,8 @@
             { id: 'liner', name: 'Liner', price: 20, unit: 'flat' },
             { id: 'arc-cut', name: 'Arc cut', price: 5, unit: 'page' },
             { id: 'gold-foil', name: 'Gold foil', price: 15, unit: 'page' },
-            { id: 'gold-foil-full-page', name: 'Gold foil full page', price: 20, unit: 'page' }
+            { id: 'gold-foil-full-page', name: 'Gold foil full page', price: 20, unit: 'page' },
+            { id: 'envelope-print', name: 'Envelope print', price: 10, unit: 'flat' } // Added envelope print
         ];
         
         // List of flat add-ons that should be included in price per set (excluding Map layout)
@@ -308,12 +324,9 @@
         
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('current-year').textContent = new Date().getFullYear();
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const tomorrowFormatted = tomorrow.toISOString().split('T')[0];
-            document.getElementById('event-date-input').value = tomorrowFormatted;
-            eventDate = tomorrowFormatted;
-            updateEventDateDisplay();
+            
+            // Try to load saved data from localStorage
+            loadSavedData();
             
             setupOptionCards('event-type-options', 'eventType', true);
             setupOptionCards('size-options', 'size');
@@ -331,41 +344,55 @@
                 document.getElementById('inserts-value').textContent = `${insertCount} insert${insertCount !== 1 ? 's' : ''}`;
                 currentSelections.inserts = { value: insertCount, price: insertPrice };
                 updateSummary();
+                saveToLocalStorage();
             });
             
             document.getElementById('sets-input').addEventListener('input', function() {
                 numberOfSets = parseInt(this.value) || 1;
                 updateSummary();
+                saveToLocalStorage();
             });
             
             document.getElementById('event-date-input').addEventListener('change', function() {
                 eventDate = this.value;
                 updateEventDateDisplay();
+                saveToLocalStorage();
             });
             
             document.getElementById('layout-checkbox').addEventListener('change', function() {
                 currentSelections.layout.required = this.checked;
                 updateSummary();
+                saveToLocalStorage();
             });
             
             document.getElementById('layout-type').addEventListener('change', function() {
                 currentSelections.layout.type = this.value;
                 updateSummary();
+                saveToLocalStorage();
             });
             
             document.getElementById('rush-checkbox').addEventListener('change', function() {
                 currentSelections.rush.required = this.checked;
                 updateSummary();
+                saveToLocalStorage();
             });
             
             document.getElementById('rush-type').addEventListener('change', function() {
                 currentSelections.rush.type = this.value;
                 updateSummary();
+                saveToLocalStorage();
+            });
+            
+            document.getElementById('discount-checkbox').addEventListener('change', function() {
+                currentSelections.discount = this.checked;
+                updateSummary();
+                saveToLocalStorage();
             });
             
             document.getElementById('location-select').addEventListener('change', function() {
                 currentSelections.location = this.value;
                 updateSummary();
+                saveToLocalStorage();
             });
             
             document.getElementById('reset-button').addEventListener('click', resetSelections);
@@ -395,6 +422,7 @@
                     
                     if (isEventType) updateEventTypeTitle();
                     updateSummary();
+                    saveToLocalStorage();
                 });
             });
         }
@@ -440,6 +468,7 @@
                         delete currentSelections.addons[addon.id];
                     }
                     updateSummary();
+                    saveToLocalStorage();
                 });
                 
                 // Add event listener for quantity input
@@ -448,6 +477,7 @@
                         if (checkbox.checked) {
                             currentSelections.addons[addon.id].quantity = parseInt(this.value) || 1;
                             updateSummary();
+                            saveToLocalStorage();
                         }
                     });
                 }
@@ -466,7 +496,7 @@
                 const formattedDate = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                 document.getElementById('event-date-display').textContent = `Event Date: ${formattedDate}`;
             } else {
-                document.getElementById('event-date-display').textContent = `Event Date: Not specified`;
+                document.getElementById('event-date-display').textContent = ``;
             }
         }
         
@@ -486,7 +516,7 @@
                     addonTotal = addon.price * addon.quantity * numberOfSets;
                     // Format: "X page(s)/pc(s) Addon Name" with correct grammar
                     const unitText = addon.unit === 'page' ? (addon.quantity === 1 ? 'page' : 'pages') : 
-                                    (addon.quantity === 1 ? 'pc' : 'pcs'); // Changed from item/items to pc/pcs
+                                    (addon.quantity === 1 ? 'pc' : 'pcs');
                     summaryHTML += `<div class="summary-line">${addon.quantity} ${unitText} ${addon.name}</div>`;
                 }
                 
@@ -532,35 +562,56 @@
             const paperPrice = currentSelections.paper.price;
             const sealPrice = currentSelections.seal.price;
             
+            // Fix for envelope display
+            const envelopeName = currentSelections.envelope.name;
+            const envelopeDisplay = envelopeName === "No envelope" ? "No envelope" : `${envelopeName} Envelope`;
+            
             // Calculate add-ons total
             calculateAddonsTotal();
+            
+            // Calculate additional pages for inserts more than 4
+            let additionalPagesText = "";
+            const insertsCount = currentSelections.inserts.value;
+            if (insertsCount > 4) {
+                const additionalPages = insertsCount - 4;
+                additionalPagesText = `${additionalPages} page${additionalPages > 1 ? 's' : ''} add`;
+            }
             
             // Calculate layout fee based on number of inserts (pages)
             const numberOfPages = currentSelections.inserts.value + 1; // Base invitation + inserts
             
-            // Calculate layout fee according to new rules
+            // Calculate layout fee according to new rules (200 for 0-1 insert, 300 for 2 inserts, etc.)
             let layoutFee = 0;
             let layoutSummary = "";
             
-            if (currentSelections.layout.required) {
-                // Box is checked
-                if (currentSelections.layout.type === "own-layout") {
-                    layoutSummary = "Own layout";
-                } else if (currentSelections.layout.type === "no-layout") {
-                    layoutFee = 200 + (100 * (numberOfPages - 1));
-                    layoutSummary = `Layout fee: ₱${layoutFee}`;
-                }
+            // Calculate layout fee based on inserts count
+            if (currentSelections.inserts.value <= 1) {
+                layoutFee = 200;
             } else {
-                // Box is unchecked
+                layoutFee = 200 + ((currentSelections.inserts.value - 1) * 100);
+            }
+            
+            // Apply layout rules based on checkbox and layout type - ALWAYS SHOW LAYOUT INFO
+            if (!currentSelections.layout.required) {
+                // Box unchecked
                 if (currentSelections.layout.type === "own-layout") {
                     layoutSummary = "Own layout";
+                    layoutFee = 0;
                 } else if (currentSelections.layout.type === "no-layout") {
                     if (numberOfSets >= 20) {
                         layoutSummary = "FREE layout";
+                        layoutFee = 0;
                     } else {
-                        layoutFee = 200 + (100 * (numberOfPages - 1));
                         layoutSummary = `Layout fee: ₱${layoutFee}`;
                     }
+                }
+            } else {
+                // Box checked
+                if (currentSelections.layout.type === "own-layout") {
+                    layoutSummary = "Own layout";
+                    layoutFee = 0;
+                } else if (currentSelections.layout.type === "no-layout") {
+                    layoutSummary = `Layout fee: ₱${layoutFee}`;
                 }
             }
             
@@ -603,7 +654,20 @@
             const totalPerSet = BASE_PRICE + sizePrice + envelopePrice + insertsPrice + paperPrice + sealPrice + addonPricePerSet;
             
             // Calculate sets total (price for all sets)
-            const setsTotal = totalPerSet * numberOfSets;
+            let payableSets = numberOfSets;
+            let freeSets = 0;
+            
+            // Apply discount logic
+            if (currentSelections.discount && currentSelections.paymentMethod === "direct-shipping") {
+                // Calculate free sets but don't give them for free, instead reduce payable sets
+                freeSets = calculateFreeSetsForDirectShipping(numberOfSets);
+                payableSets = numberOfSets - freeSets;
+            } else {
+                // Normal calculation
+                payableSets = numberOfSets;
+            }
+            
+            const setsTotal = totalPerSet * payableSets;
             
             // Calculate one-time fees (Map layout, layout fee, rush fee, and flat add-ons NOT in price per set)
             let oneTimeFeesTotal = 0;
@@ -623,13 +687,15 @@
                 }
             });
             
-            // Add layout fee to one-time fees if applicable
-            if (layoutSummary && layoutSummary !== "FREE layout" && layoutSummary !== "Own layout") {
-                oneTimeFeesTotal += layoutFee;
-                oneTimeFeesHTML += `<div class="summary-line">${layoutSummary}</div>`;
-            } else if (layoutSummary === "FREE layout" || layoutSummary === "Own layout") {
-                // These don't have a fee, but we might want to show them in the summary
-                // For now, we'll leave them out of the one-time fees section
+            // Add layout fee to one-time fees if applicable - ALWAYS SHOW LAYOUT INFO
+            if (layoutSummary) {
+                if (layoutSummary.startsWith("Layout fee:")) {
+                    oneTimeFeesTotal += layoutFee;
+                    oneTimeFeesHTML += `<div class="summary-line">${layoutSummary}</div>`;
+                } else {
+                    // Show "FREE layout" or "Own layout" even without fee
+                    oneTimeFeesHTML += `<div class="summary-line">${layoutSummary}</div>`;
+                }
             }
             
             // Add rush fee to one-time fees if applicable
@@ -638,19 +704,32 @@
                 oneTimeFeesHTML += `<div class="summary-line">${rushSummary}</div>`;
             }
             
+            // Add additional pages text if applicable - THIS GOES BEFORE SETS TOTAL
+            if (additionalPagesText) {
+                oneTimeFeesHTML += `<div class="summary-line">${additionalPagesText}</div>`;
+            }
+            
             const finalTotal = setsTotal + oneTimeFeesTotal;
             
             // Update display
             document.getElementById('price-per-set').textContent = `₱${totalPerSet} each`;
             document.getElementById('summary-size-line').textContent = `${currentSelections.size.name} size`;
-            document.getElementById('summary-envelope-line').textContent = `${currentSelections.envelope.name} Envelope`;
+            document.getElementById('summary-envelope-line').textContent = envelopeDisplay;
             document.getElementById('summary-inserts-line').textContent = `${currentSelections.inserts.value} insert${currentSelections.inserts.value !== 1 ? 's' : ''}`;
             document.getElementById('summary-paper-line').textContent = `${currentSelections.paper.name} paper`;
             document.getElementById('summary-seal-line').textContent = currentSelections.seal.name;
             
-            document.getElementById('sets-total').innerHTML = `${numberOfSets} sets x ₱${totalPerSet} each = ₱${setsTotal}`;
+            // Update sets total display with discount logic
+            let setsTotalHTML = '';
+            if (currentSelections.discount && freeSets > 0) {
+                setsTotalHTML = `${numberOfSets} sets (pay for ${payableSets}) x ₱${totalPerSet} each = ₱${setsTotal}`;
+            } else {
+                setsTotalHTML = `${numberOfSets} sets x ₱${totalPerSet} each = ₱${setsTotal}`;
+            }
             
-            // Update one-time fees section
+            document.getElementById('sets-total').innerHTML = setsTotalHTML;
+            
+            // Update one-time fees section (now placed before sets total)
             if (oneTimeFeesHTML) {
                 document.getElementById('one-time-fees').innerHTML = oneTimeFeesHTML;
                 document.getElementById('one-time-fees').style.display = 'block';
@@ -662,19 +741,21 @@
             document.getElementById('final-total').innerHTML = `Total: ₱${finalTotal}`;
             
             // Update payment methods section
-            updatePaymentMethods(finalTotal, setsTotal, oneTimeFeesTotal);
+            updatePaymentMethods(finalTotal, setsTotal, oneTimeFeesTotal, payableSets, freeSets);
         }
         
-        function updatePaymentMethods(finalTotal, setsTotal, oneTimeFeesTotal) {
+        function updatePaymentMethods(finalTotal, setsTotal, oneTimeFeesTotal, payableSets, freeSets) {
             const paymentMethodsSection = document.getElementById('payment-methods-section');
-            const locationName = locationNames[currentSelections.location];
+            const locationName = currentSelections.location ? locationNames[currentSelections.location] : '';
             const shippingFee = calculateShippingFee(finalTotal);
-            const freeSets = calculateFreeSetsForDirectShipping(numberOfSets);
+            
+            // Calculate free sets for display (for non-discount case)
+            const displayFreeSets = currentSelections.discount ? 0 : calculateFreeSetsForDirectShipping(numberOfSets);
             
             let paymentMethodsHTML = '';
             
-            // Calculate downpayment (50% of sets total + one-time fees)
-            const downpayment = roundToWholeNumber((setsTotal + oneTimeFeesTotal) / 2);
+            // Calculate downpayment (50% of final total including shipping)
+            const downpayment = roundToWholeNumber(finalTotal / 2);
             const balance = finalTotal - downpayment;
             const shopeeCOD = roundToWholeNumber(balance * 1.15); // 15% additional for COD
             
@@ -685,8 +766,9 @@
                     <div class="payment-method-option">
                         <div class="payment-method-title">Direct shipping</div>
                         <div class="payment-method-details">
-                            Payment: ₱${finalTotal}<br>
-                            ${freeSets > 0 ? `FREE ${freeSets} set${freeSets > 1 ? 's' : ''}<br>` : ''}
+                            Downpayment: ₱${downpayment}<br>
+                            Balance before ship out: ₱${balance}<br>
+                            ${displayFreeSets > 0 ? `FREE ${displayFreeSets} set${displayFreeSets > 1 ? 's' : ''}<br>` : ''}
                             ${shippingFee > 0 ? `+ ₱${shippingFee} Shipping fee` : 'FREE Shipping'}
                         </div>
                     </div>
@@ -704,8 +786,9 @@
                     <div class="payment-method-option">
                         <div class="payment-method-title">Direct shipping</div>
                         <div class="payment-method-details">
-                            Payment: ₱${finalTotal}<br>
-                            ${freeSets > 0 ? `FREE ${freeSets} set${freeSets > 1 ? 's' : ''}<br>` : ''}
+                            Downpayment: ₱${downpayment}<br>
+                            Balance before ship out: ₱${balance}<br>
+                            ${displayFreeSets > 0 ? `FREE ${displayFreeSets} set${displayFreeSets > 1 ? 's' : ''}<br>` : ''}
                             ${shippingFee > 0 ? `+ ₱${shippingFee} Shipping fee` : 'FREE Shipping'}
                         </div>
                     </div>
@@ -733,10 +816,156 @@
                 `;
             }
             
-            // Add location
-            paymentMethodsHTML += `<div class="payment-method-details" style="margin-top: 10px; font-weight: 500;">Location: ${locationName}</div>`;
+            // Add discount note if applicable
+            if (currentSelections.discount && freeSets > 0) {
+                paymentMethodsHTML += `<div class="payment-method-details" style="margin-top: 8px; color: #666; font-style: italic; font-size: 0.8rem;">
+                    Discount applied: Pay for ${payableSets} sets, receive ${numberOfSets} sets
+                </div>`;
+            }
+            
+            // Add location if specified
+            if (locationName) {
+                paymentMethodsHTML += `<div class="payment-method-details" style="margin-top: 8px; font-weight: 500; font-size: 0.85rem;">Location: ${locationName}</div>`;
+            }
             
             paymentMethodsSection.innerHTML = paymentMethodsHTML;
+        }
+        
+        function saveToLocalStorage() {
+            const saveData = {
+                currentSelections: currentSelections,
+                numberOfSets: numberOfSets,
+                eventDate: eventDate
+            };
+            localStorage.setItem('invitationCalculatorData', JSON.stringify(saveData));
+        }
+        
+        function loadSavedData() {
+            const savedData = localStorage.getItem('invitationCalculatorData');
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    
+                    // Restore basic data
+                    if (data.numberOfSets) numberOfSets = data.numberOfSets;
+                    if (data.eventDate) eventDate = data.eventDate;
+                    
+                    // Restore currentSelections if available
+                    if (data.currentSelections) {
+                        currentSelections = data.currentSelections;
+                        
+                        // Update UI elements based on saved data
+                        updateUIFromSavedData();
+                    }
+                } catch (e) {
+                    console.error('Error loading saved data:', e);
+                }
+            }
+        }
+        
+        function updateUIFromSavedData() {
+            // Update event type
+            const eventTypeCards = document.querySelectorAll('#event-type-options .option-card');
+            eventTypeCards.forEach(card => {
+                if (card.getAttribute('data-value') === currentSelections.eventType.value) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+            updateEventTypeTitle();
+            
+            // Update size
+            const sizeCards = document.querySelectorAll('#size-options .option-card');
+            sizeCards.forEach(card => {
+                if (card.getAttribute('data-value') === currentSelections.size.value) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+            
+            // Update envelope
+            const envelopeCards = document.querySelectorAll('#envelope-options .option-card');
+            envelopeCards.forEach(card => {
+                if (card.getAttribute('data-value') === currentSelections.envelope.value) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+            
+            // Update inserts slider
+            document.getElementById('inserts-slider').value = currentSelections.inserts.value;
+            document.getElementById('inserts-value').textContent = `${currentSelections.inserts.value} insert${currentSelections.inserts.value !== 1 ? 's' : ''}`;
+            
+            // Update paper
+            const paperCards = document.querySelectorAll('#paper-options .option-card');
+            paperCards.forEach(card => {
+                if (card.getAttribute('data-value') === currentSelections.paper.value) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+            
+            // Update seal
+            const sealCards = document.querySelectorAll('#seal-options .option-card');
+            sealCards.forEach(card => {
+                if (card.getAttribute('data-value') === currentSelections.seal.value) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+            
+            // Update layout checkbox and dropdown
+            document.getElementById('layout-checkbox').checked = currentSelections.layout.required;
+            document.getElementById('layout-type').value = currentSelections.layout.type;
+            
+            // Update rush checkbox and dropdown
+            document.getElementById('rush-checkbox').checked = currentSelections.rush.required;
+            document.getElementById('rush-type').value = currentSelections.rush.type;
+            
+            // Update discount checkbox
+            document.getElementById('discount-checkbox').checked = currentSelections.discount;
+            
+            // Update payment method
+            const paymentMethodCards = document.querySelectorAll('#payment-method-options .option-card');
+            paymentMethodCards.forEach(card => {
+                if (card.getAttribute('data-value') === currentSelections.paymentMethod) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+            
+            // Update location
+            document.getElementById('location-select').value = currentSelections.location;
+            
+            // Update sets input
+            document.getElementById('sets-input').value = numberOfSets;
+            
+            // Update event date
+            document.getElementById('event-date-input').value = eventDate;
+            updateEventDateDisplay();
+            
+            // Update add-ons (need to wait for DOM to be ready)
+            setTimeout(() => {
+                if (currentSelections.addons) {
+                    Object.keys(currentSelections.addons).forEach(addonId => {
+                        const checkbox = document.getElementById(`addon-${addonId}`);
+                        if (checkbox) {
+                            checkbox.checked = true;
+                            const quantityInput = document.getElementById(`qty-${addonId}`);
+                            if (quantityInput) {
+                                quantityInput.disabled = false;
+                                quantityInput.value = currentSelections.addons[addonId].quantity;
+                            }
+                        }
+                    });
+                }
+            }, 100);
         }
         
         function resetSelections() {
@@ -784,8 +1013,10 @@
             document.getElementById('layout-type').value = "no-layout";
             document.getElementById('rush-checkbox').checked = false;
             document.getElementById('rush-type').value = "no-layout";
+            document.getElementById('discount-checkbox').checked = false;
             currentSelections.layout = { required: false, type: "no-layout", pages: 1 };
             currentSelections.rush = { required: false, type: "no-layout" };
+            currentSelections.discount = false;
             
             // Reset payment method
             const paymentMethodCards = document.querySelectorAll('#payment-method-options .option-card');
@@ -794,18 +1025,19 @@
             currentSelections.paymentMethod = "none";
             
             // Reset location
-            document.getElementById('location-select').value = "ncr";
-            currentSelections.location = "ncr";
+            document.getElementById('location-select').value = "";
+            currentSelections.location = "";
             
             document.getElementById('sets-input').value = 20;
             numberOfSets = 20;
             
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const tomorrowFormatted = tomorrow.toISOString().split('T')[0];
-            document.getElementById('event-date-input').value = tomorrowFormatted;
-            eventDate = tomorrowFormatted;
+            // Clear event date
+            document.getElementById('event-date-input').value = "";
+            eventDate = "";
             updateEventDateDisplay();
+            
+            // Clear localStorage
+            localStorage.removeItem('invitationCalculatorData');
             
             updateSummary();
             alert("All selections have been reset to default values.");
@@ -845,25 +1077,28 @@
                         // For per-page/per-piece add-ons, add their price to price per set
                         // Format: "X page(s)/pc(s) Addon Name" with correct grammar
                         const unitText = addon.unit === 'page' ? (addon.quantity === 1 ? 'page' : 'pages') : 
-                                        (addon.quantity === 1 ? 'pc' : 'pcs'); // Changed from item/items to pc/pcs
+                                        (addon.quantity === 1 ? 'pc' : 'pcs');
                         addonsInPricePerSet += `${addon.quantity} ${unitText} ${addon.name}\n`;
                     }
                 });
             }
             
-            let priceSummaryText = `₱${totalPerSet} each\n\n`;
+            let priceSummaryText = `₱${totalPerSet} each\n`;
             priceSummaryText += `${sizeText}\n`;
             priceSummaryText += `${envelopeText}\n`;
             priceSummaryText += `${insertsText}\n`;
             priceSummaryText += `${paperText}\n`;
-            priceSummaryText += `${sealText}\n`;
+            priceSummaryText += `${sealText}`;
             
             if (addonsInPricePerSet) {
                 priceSummaryText += `\n${addonsInPricePerSet}`;
             }
             
+            // Remove trailing newlines
+            priceSummaryText = priceSummaryText.trim();
+            
             navigator.clipboard.writeText(priceSummaryText).then(() => {
-                const notification = document.getElementById('price-notification');
+                const notification = document.getElemenstById('price-notification');
                 notification.classList.add('show');
                 setTimeout(() => notification.classList.remove('show'), 3000);
             }).catch(err => {
@@ -872,204 +1107,299 @@
             });
         }
         
-        function copyQuotation() {
-            const sizePrice = currentSelections.size.price;
-            const envelopePrice = currentSelections.envelope.price;
-            const insertsPrice = currentSelections.inserts.price;
-            const paperPrice = currentSelections.paper.price;
-            const sealPrice = currentSelections.seal.price;
-            
-            // Calculate add-ons total and summary
-            let addonsSummary = "";
-            
-            Object.keys(currentSelections.addons).forEach(addonId => {
-                const addon = currentSelections.addons[addonId];
-                
-                if (addon.unit === 'flat') {
-                    // Show all flat add-ons in the main summary
-                    addonsSummary += `${addon.name}\n`;
-                } else if (addon.unit === 'page' || addon.unit === 'piece') {
-                    // Format: "X page(s)/pc(s) Addon Name" with correct grammar
-                    const unitText = addon.unit === 'page' ? (addon.quantity === 1 ? 'page' : 'pages') : 
-                                    (addon.quantity === 1 ? 'pc' : 'pcs'); // Changed from item/items to pc/pcs
-                    addonsSummary += `${addon.quantity} ${unitText} ${addon.name}\n`;
-                }
-            });
-            
-            // Calculate layout fee based on number of inserts (pages)
-            const numberOfPages = currentSelections.inserts.value + 1; // Base invitation + inserts
-            
-            let layoutFee = 0;
-            let layoutSummary = "";
-            
-            if (currentSelections.layout.required) {
-                // Box is checked
-                if (currentSelections.layout.type === "own-layout") {
-                    layoutSummary = "Own layout";
-                } else if (currentSelections.layout.type === "no-layout") {
-                    layoutFee = 200 + (100 * (numberOfPages - 1));
-                    layoutSummary = `Layout fee: ₱${layoutFee}`;
-                }
-            } else {
-                // Box is unchecked
-                if (currentSelections.layout.type === "own-layout") {
-                    layoutSummary = "Own layout";
-                } else if (currentSelections.layout.type === "no-layout") {
-                    if (numberOfSets >= 20) {
-                        layoutSummary = "FREE layout";
-                    } else {
-                        layoutFee = 200 + (100 * (numberOfPages - 1));
-                        layoutSummary = `Layout fee: ₱${layoutFee}`;
-                    }
-                }
-            }
-            
-            let rushFee = 0;
-            let rushSummary = "";
-            if (currentSelections.rush.required) {
-                if (currentSelections.rush.type === "own-layout") {
-                    rushFee = 10 * numberOfSets;
-                    rushSummary = `Rush fee: ₱${rushFee}`;
-                } else if (currentSelections.rush.type === "no-layout") {
-                    rushFee = 100 + (10 * numberOfSets);
-                    rushSummary = `Rush fee: ₱${rushFee}`;
-                }
-            }
-            
-            // Calculate price per set (including flat add-ons except Map layout)
-            let addonPricePerSet = 0;
-            Object.keys(currentSelections.addons).forEach(addonId => {
-                const addon = currentSelections.addons[addonId];
-                
-                if (addonId === 'map-layout') {
-                    // Map layout is NOT included in price per set (it's a one-time fee)
-                    return;
-                }
-                
-                if (addon.unit === 'flat') {
-                    // Check if this flat add-on should be included in price per set
-                    if (flatAddonsInPricePerSet.includes(addonId)) {
-                        // These flat add-ons are included in price per set
-                        addonPricePerSet += addon.price;
-                    }
-                } else {
-                    // For per-page/per-piece add-ons, add their price to price per set
-                    addonPricePerSet += addon.price * addon.quantity;
-                }
-            });
-            
-            const totalPerSet = BASE_PRICE + sizePrice + envelopePrice + insertsPrice + paperPrice + sealPrice + addonPricePerSet;
-            
-            // Calculate sets total (price for all sets)
-            const setsTotal = totalPerSet * numberOfSets;
-            
-            // Calculate one-time fees (Map layout, layout fee, rush fee, and flat add-ons NOT in price per set)
-            let oneTimeFeesTotal = 0;
-            let oneTimeFeesText = "";
-            
-            Object.keys(currentSelections.addons).forEach(addonId => {
-                const addon = currentSelections.addons[addonId];
-                
-                if (addonId === 'map-layout') {
-                    // Map layout is always a one-time fee
-                    oneTimeFeesTotal += addon.price;
-                    oneTimeFeesText += `Map layout: ₱${addon.price}\n`;
-                } else if (addon.unit === 'flat' && !flatAddonsInPricePerSet.includes(addonId)) {
-                    // Flat add-ons NOT in the price-per-set list are one-time fees
-                    oneTimeFeesTotal += addon.price;
-                    oneTimeFeesText += `${addon.name}: ₱${addon.price}\n`;
-                }
-            });
-            
-            // Add layout fee to one-time fees if applicable
-            if (layoutSummary && layoutSummary !== "FREE layout" && layoutSummary !== "Own layout") {
-                oneTimeFeesTotal += layoutFee;
-                oneTimeFeesText += `${layoutSummary}\n`;
-            }
-            
-            // Add rush fee to one-time fees if applicable
-            if (rushSummary) {
-                oneTimeFeesTotal += rushFee;
-                oneTimeFeesText += `${rushSummary}\n`;
-            }
-            
-            const finalTotal = setsTotal + oneTimeFeesTotal;
-            
-            // Calculate payment details
-            const shippingFee = calculateShippingFee(finalTotal);
-            const freeSets = calculateFreeSetsForDirectShipping(numberOfSets);
-            const downpayment = roundToWholeNumber((setsTotal + oneTimeFeesTotal) / 2);
-            const balance = finalTotal - downpayment;
-            const shopeeCOD = roundToWholeNumber(balance * 1.15); // 15% additional for COD
-            
-            const eventType = currentSelections.eventType.name;
-            const eventTitle = eventType === "Special event" ? "Special event invitation" : `${eventType} invitation`;
-            
-            let formattedEventDate = "Not specified";
-            if (eventDate) {
-                const dateObj = new Date(eventDate);
-                formattedEventDate = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-            }
-            
-            let quotationText = `${eventTitle}
-Event Date: ${formattedEventDate}
-
-₱${totalPerSet} each
-
-${currentSelections.size.name} size
-${currentSelections.envelope.name} Envelope
-${currentSelections.inserts.value} insert${currentSelections.inserts.value !== 1 ? 's' : ''}
-${currentSelections.paper.name} paper
-${currentSelections.seal.name}`;
-
-            if (addonsSummary) quotationText += `\n${addonsSummary}`;
-            
-            quotationText += `\n${numberOfSets} sets x ₱${totalPerSet} each = ₱${setsTotal}`;
-            
-            if (oneTimeFeesText) quotationText += `\n\n${oneTimeFeesText}`;
-            
-            quotationText += `\nTotal: ₱${finalTotal}`;
-            
-            // Add payment methods based on selection
-            quotationText += `\n\nPayment method\n`;
-            
-            if (currentSelections.paymentMethod === "none") {
-                // Show both Direct Shipping and Shopee Checkout
-                quotationText += `\nDirect shipping
-Payment: ₱${finalTotal}
-${freeSets > 0 ? `FREE ${freeSets} set${freeSets > 1 ? 's' : ''}\n` : ''}${shippingFee > 0 ? `+ ₱${shippingFee} Shipping fee` : 'FREE Shipping'}
-
-Shopee Checkout (15% add)
-Downpayment: ₱${downpayment}
-COD: ₱${shopeeCOD} ${shippingFee > 0 ? `+ shipping fee` : ''}`;
-            } else if (currentSelections.paymentMethod === "direct-shipping") {
-                // Show only Direct Shipping
-                quotationText += `\nDirect shipping
-Payment: ₱${finalTotal}
-${freeSets > 0 ? `FREE ${freeSets} set${freeSets > 1 ? 's' : ''}\n` : ''}${shippingFee > 0 ? `+ ₱${shippingFee} Shipping fee` : 'FREE Shipping'}`;
-            } else if (currentSelections.paymentMethod === "shopee-checkout") {
-                // Show only Shopee Checkout (COD)
-                quotationText += `\nShopee Checkout (15% add)
-Downpayment: ₱${downpayment}
-COD: ₱${shopeeCOD} ${shippingFee > 0 ? `+ shipping fee` : ''}`;
-            } else if (currentSelections.paymentMethod === "shopee-checkout-full") {
-                // Show only Shopee Checkout Full Payment
-                quotationText += `\nShopee Checkout Full Payment
-Full Payment: ₱${finalTotal} ${shippingFee > 0 ? `+ shipping fee` : ''}`;
-            }
-            
-            // Add location
-            quotationText += `\n\nLocation: ${locationNames[currentSelections.location]}`;
-            
-            navigator.clipboard.writeText(quotationText).then(() => {
-                const notification = document.getElementById('notification');
-                notification.classList.add('show');
-                setTimeout(() => notification.classList.remove('show'), 3000);
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-                alert('Failed to copy quotation to clipboard. Please try again.');
-            });
+function copyQuotation() {
+    const sizePrice = currentSelections.size.price;
+    const envelopePrice = currentSelections.envelope.price;
+    const insertsPrice = currentSelections.inserts.price;
+    const paperPrice = currentSelections.paper.price;
+    const sealPrice = currentSelections.seal.price;
+    
+    // Calculate add-ons total and summary
+    let addonsSummary = "";
+    
+    Object.keys(currentSelections.addons).forEach(addonId => {
+        const addon = currentSelections.addons[addonId];
+        
+        if (addon.unit === 'flat') {
+            // Show all flat add-ons in the main summary
+            addonsSummary += `${addon.name}\n`;
+        } else if (addon.unit === 'page' || addon.unit === 'piece') {
+            // Format: "X page(s)/pc(s) Addon Name" with correct grammar
+            const unitText = addon.unit === 'page' ? (addon.quantity === 1 ? 'page' : 'pages') : 
+                            (addon.quantity === 1 ? 'pc' : 'pcs');
+            addonsSummary += `${addon.quantity} ${unitText} ${addon.name}\n`;
         }
+    });
+    
+    // Calculate additional pages for inserts more than 4
+    let additionalPagesText = "";
+    const insertsCount = currentSelections.inserts.value;
+    if (insertsCount > 4) {
+        const additionalPages = insertsCount - 4;
+        additionalPagesText = `${additionalPages} page${additionalPages > 1 ? 's' : ''} add`;
+    }
+    
+    // Calculate layout fee based on number of inserts (pages)
+    let layoutFee = 0;
+    let layoutSummary = "";
+    
+    // Calculate layout fee based on inserts count
+    if (currentSelections.inserts.value <= 1) {
+        layoutFee = 200;
+    } else {
+        layoutFee = 200 + ((currentSelections.inserts.value - 1) * 100);
+    }
+    
+    // Apply layout rules based on checkbox and layout type
+    if (!currentSelections.layout.required) {
+        // Box unchecked
+        if (currentSelections.layout.type === "own-layout") {
+            layoutSummary = "Own layout";
+            layoutFee = 0;
+        } else if (currentSelections.layout.type === "no-layout") {
+            if (numberOfSets >= 20) {
+                layoutSummary = "FREE layout";
+                layoutFee = 0;
+            } else {
+                layoutSummary = `Layout fee: ₱${layoutFee}`;
+            }
+        }
+    } else {
+        // Box checked
+        if (currentSelections.layout.type === "own-layout") {
+            layoutSummary = "Own layout";
+            layoutFee = 0;
+        } else if (currentSelections.layout.type === "no-layout") {
+            layoutSummary = `Layout fee: ₱${layoutFee}`;
+        }
+    }
+    
+    let rushFee = 0;
+    let rushSummary = "";
+    if (currentSelections.rush.required) {
+        if (currentSelections.rush.type === "own-layout") {
+            rushFee = 10 * numberOfSets;
+            rushSummary = `Rush fee: ₱${rushFee}`;
+        } else if (currentSelections.rush.type === "no-layout") {
+            rushFee = 100 + (10 * numberOfSets);
+            rushSummary = `Rush fee: ₱${rushFee}`;
+        }
+    }
+    
+    // Calculate price per set (including flat add-ons except Map layout)
+    let addonPricePerSet = 0;
+    Object.keys(currentSelections.addons).forEach(addonId => {
+        const addon = currentSelections.addons[addonId];
+        
+        if (addonId === 'map-layout') {
+            // Map layout is NOT included in price per set (it's a one-time fee)
+            return;
+        }
+        
+        if (addon.unit === 'flat') {
+            // Check if this flat add-on should be included in price per set
+            if (flatAddonsInPricePerSet.includes(addonId)) {
+                // These flat add-ons are included in price per set
+                addonPricePerSet += addon.price;
+            }
+        } else {
+            // For per-page/per-piece add-ons, add their price to price per set
+            addonPricePerSet += addon.price * addon.quantity;
+        }
+    });
+    
+    const totalPerSet = BASE_PRICE + sizePrice + envelopePrice + insertsPrice + paperPrice + sealPrice + addonPricePerSet;
+    
+    // Calculate sets total (price for all sets)
+    let payableSets = numberOfSets;
+    let freeSets = 0;
+    
+    // Apply discount logic
+    if (currentSelections.discount && currentSelections.paymentMethod === "direct-shipping") {
+        // Calculate free sets but don't give them for free, instead reduce payable sets
+        freeSets = calculateFreeSetsForDirectShipping(numberOfSets);
+        payableSets = numberOfSets - freeSets;
+    } else {
+        // Normal calculation
+        payableSets = numberOfSets;
+    }
+    
+    const setsTotal = totalPerSet * payableSets;
+    
+    // Calculate one-time fees (Map layout, layout fee, rush fee, and flat add-ons NOT in price per set)
+    let oneTimeFeesTotal = 0;
+    let oneTimeFeesText = "";
+    
+    Object.keys(currentSelections.addons).forEach(addonId => {
+        const addon = currentSelections.addons[addonId];
+        
+        if (addonId === 'map-layout') {
+            // Map layout is always a one-time fee
+            oneTimeFeesTotal += addon.price;
+            oneTimeFeesText += `Map layout: ₱${addon.price}\n`;
+        } else if (addon.unit === 'flat' && !flatAddonsInPricePerSet.includes(addonId)) {
+            // Flat add-ons NOT in the price-per-set list are one-time fees
+            oneTimeFeesTotal += addon.price;
+            oneTimeFeesText += `${addon.name}: ₱${addon.price}\n`;
+        }
+    });
+    
+    // Add layout fee to one-time fees if applicable - ALWAYS SHOW LAYOUT INFO
+    if (layoutSummary) {
+        if (layoutSummary.startsWith("Layout fee:")) {
+            oneTimeFeesTotal += layoutFee;
+            oneTimeFeesText += `${layoutSummary}\n`;
+        } else {
+            // Show "FREE layout" or "Own layout" even without fee
+            oneTimeFeesText += `${layoutSummary}\n`;
+        }
+    }
+    
+    // Add rush fee to one-time fees if applicable
+    if (rushSummary) {
+        oneTimeFeesTotal += rushFee;
+        oneTimeFeesText += `${rushSummary}\n`;
+    }
+    
+    // Add additional pages text if applicable
+    if (additionalPagesText) {
+        oneTimeFeesText += `${additionalPagesText}\n`;
+    }
+    
+    const finalTotal = setsTotal + oneTimeFeesTotal;
+    
+    // Calculate payment details - NEW LOGIC: For direct shipping, subtract free sets from total
+    const shippingFee = calculateShippingFee(finalTotal);
+    const displayFreeSets = currentSelections.discount ? 0 : calculateFreeSetsForDirectShipping(numberOfSets);
+    const downpayment = roundToWholeNumber(finalTotal / 2);
+    const balance = finalTotal - downpayment;
+    const shopeeCOD = roundToWholeNumber(balance * 1.15); // 15% additional for COD
+    
+    const eventType = currentSelections.eventType.name;
+    const eventTitle = eventType === "Special event" ? "Special event invitation" : `${eventType} invitation`;
+    
+    let formattedEventDate = "";
+    if (eventDate) {
+        const dateObj = new Date(eventDate);
+        formattedEventDate = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+    
+    // Fix envelope display
+    const envelopeName = currentSelections.envelope.name;
+    const envelopeDisplay = envelopeName === "No envelope" ? "No envelope" : `${envelopeName} Envelope`;
+    
+    // Build quotation text with proper formatting
+    let quotationText = `${eventTitle}`;
+    
+    if (formattedEventDate) {
+        quotationText += `\nEvent Date: ${formattedEventDate}`;
+    }
+    
+    quotationText += `\n\n₱${totalPerSet} each\n\n`;
+    quotationText += `${currentSelections.size.name} size\n`;
+    quotationText += `${envelopeDisplay}\n`;
+    quotationText += `${currentSelections.inserts.value} insert${currentSelections.inserts.value !== 1 ? 's' : ''}\n`;
+    quotationText += `${currentSelections.paper.name} paper\n`;
+    quotationText += `${currentSelections.seal.name}`;
+    
+    if (addonsSummary) {
+        quotationText += `\n${addonsSummary.trim()}`;
+    }
+    
+    // Handle sets total
+    let setsTotalText = '';
+    if (currentSelections.discount && freeSets > 0) {
+        setsTotalText = `${numberOfSets} sets (pay for ${payableSets}) x ₱${totalPerSet} each = ₱${setsTotal}`;
+    } else {
+        setsTotalText = `${numberOfSets} sets x ₱${totalPerSet} each = ₱${setsTotal}`;
+    }
+    
+    quotationText += `\n\n${setsTotalText}`;
+    
+    // Add layout, rush, and additional pages info (remove empty lines from oneTimeFeesText)
+    if (oneTimeFeesText.trim()) {
+        // Add a single newline before the layout/rush info
+        quotationText += `\n${oneTimeFeesText.trim()}`;
+    }
+    
+    quotationText += `\n\nTotal: ₱${finalTotal}`;
+    
+    // Add payment methods based on selection
+    quotationText += `\n\nPayment method`;
+    
+    if (currentSelections.paymentMethod === "none") {
+        // Show both Direct Shipping and Shopee Checkout
+        quotationText += `\n\nDirect shipping\n\n`;
+        quotationText += `Downpayment: ₱${downpayment}\n`;
+        quotationText += `Balance before ship out: ₱${balance}`;
+        if (displayFreeSets > 0) {
+            quotationText += `\nFREE ${displayFreeSets} set${displayFreeSets > 1 ? 's' : ''}`;
+        }
+        if (shippingFee > 0) {
+            quotationText += `\n+ ₱${shippingFee} Shipping fee`;
+        } else {
+            quotationText += `\nFREE Shipping`;
+        }
+        
+        quotationText += `\n\nShopee Checkout (15% add)\n\n`;
+        quotationText += `Downpayment: ₱${downpayment}\n`;
+        quotationText += `COD: ₱${shopeeCOD}`;
+        if (shippingFee > 0) {
+            quotationText += ` + shipping fee`;
+        }
+    } else if (currentSelections.paymentMethod === "direct-shipping") {
+        // Show only Direct Shipping
+        quotationText += `\n\nDirect shipping\n\n`;
+        quotationText += `Downpayment: ₱${downpayment}\n`;
+        quotationText += `Balance before ship out: ₱${balance}`;
+        if (displayFreeSets > 0) {
+            quotationText += `\nFREE ${displayFreeSets} set${displayFreeSets > 1 ? 's' : ''}`;
+        }
+        if (shippingFee > 0) {
+            quotationText += `\n+ ₱${shippingFee} Shipping fee`;
+        } else {
+            quotationText += `\nFREE Shipping`;
+        }
+    } else if (currentSelections.paymentMethod === "shopee-checkout") {
+        // Show only Shopee Checkout (COD)
+        quotationText += `\n\nShopee Checkout (15% add)\n\n`;
+        quotationText += `Downpayment: ₱${downpayment}\n`;
+        quotationText += `COD: ₱${shopeeCOD}`;
+        if (shippingFee > 0) {
+            quotationText += ` + shipping fee`;
+        }
+    } else if (currentSelections.paymentMethod === "shopee-checkout-full") {
+        // Show only Shopee Checkout Full Payment
+        quotationText += `\n\nShopee Checkout Full Payment\n\n`;
+        quotationText += `Full Payment: ₱${finalTotal}`;
+        if (shippingFee > 0) {
+            quotationText += ` + shipping fee`;
+        }
+    }
+    
+    // Add discount note if applicable
+    if (currentSelections.discount && freeSets > 0) {
+        quotationText += `\n\nDiscount applied: Pay for ${payableSets} sets, receive ${numberOfSets} sets`;
+    }
+    
+    // Add location if specified
+    const locationName = currentSelections.location ? locationNames[currentSelections.location] : '';
+    if (locationName) {
+        quotationText += `\n\nLocation: ${locationName}`;
+    }
+    
+    // Remove multiple consecutive empty lines and trim
+    quotationText = quotationText.replace(/\n\n\n+/g, '\n\n').trim();
+    
+    navigator.clipboard.writeText(quotationText).then(() => {
+        const notification = document.getElementById('notification');
+        notification.classList.add('show');
+        setTimeout(() => notification.classList.remove('show'), 3000);
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+        alert('Failed to copy quotation to clipboard. Please try again.');
+    });
+}
         
         function printQuote() {
             window.print();
