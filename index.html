@@ -12,9 +12,40 @@
         header { text-align: center; padding: 10px 20px; background-color: #f5f5f5; border-bottom: 1px solid #e0e0e0; margin-bottom: 20px; }
         h1 { font-size: 1.5rem; color: #333333; font-weight: 400; }
         .calculator-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; }
-        @media (max-width: 900px) { .calculator-wrapper { grid-template-columns: 1fr; } }
-        .options-panel, .result-panel { background-color: white; border: 1px solid #e0e0e0; padding: 20px; }
-        .result-panel { display: flex; flex-direction: column; }
+        @media (max-width: 900px) { .calculator-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+    align-items: start;
+} }
+        .options-panel, .result-panel {
+			background-color: white;
+			border: 1px solid #e0e0e0;
+			padding: 20px;
+			position: sticky;
+			top: 20px;
+			height: fit-content;
+			max-height: calc(100vh - 40px);
+			overflow-y: auto;
+			align-self: start;}
+        .result-panel {
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    align-self: start;
+}
+
+@media (max-width: 900px) {
+    .result-panel {
+        position: static;
+        max-height: none;
+    }
+}
         .section-title { font-size: 1.1rem; color: #333333; margin-bottom: 15px; padding-bottom: 6px; border-bottom: 1px solid #e0e0e0; font-weight: 500; }
         .option-group { margin-bottom: 20px; }
         .option-label { display: block; font-weight: 500; margin-bottom: 8px; color: #333333; font-size: 0.95rem; }
@@ -157,6 +188,17 @@
                 </div>
                 
                 <div class="section-divider"></div>
+				<div class="option-group">
+					<label class="option-label">Import Quotation</label>
+					<div style="margin-bottom: 8px; font-size: 0.85rem; color: #666;">
+					</div>
+					<textarea class="text-input" id="import-textarea" rows="4" placeholder="Paste quotation text here..."></textarea>
+					<button class="action-button" id="import-button" style="margin-top: 10px; width: 100%;">
+						<i class="fas fa-file-import"></i> Import Quotation
+					</button>
+				</div>
+				<div class="section-divider"></div>
+				<h2 class="section-title">Customization Options</h2>
                 
                 <!-- Layout & Rush Section -->
                 <h2 class="section-title">Order Details</h2>
@@ -209,7 +251,7 @@
                 
                 <div class="input-row">
                     <div class="input-group"><label class="input-label">Number of Sets</label><input type="number" class="text-input" id="sets-input" min="1" max="1000" value="20"></div>
-                    <div class="input-group"><label class="input-label">Event Date</label><input type="date" class="date-input" id="event-date-input"></div>
+                    <div class="input-group"><label class="input-label">Event Date</label><input type="date" class="date-input" id="event-date-input" value=""></div>
                 </div>
                 <div class="button-row">
                     <button class="action-button reset-button" id="reset-button"><i class="fas fa-redo-alt"></i> Reset All</button>
@@ -282,7 +324,7 @@
             { id: 'different-sized-insert', name: 'Different sized insert', price: 5, unit: 'flat' },
             { id: 'back-to-back-print', name: 'Back to back print', price: 5, unit: 'page' },
             { id: 'ribbon-addon', name: 'Ribbon', price: 10, unit: 'flat' },
-            { id: 'sticker-seal-addon', name: 'Sticker seal', price: 3, unit: 'piece' },
+            { id: 'sticker-seal-addon', name: 'Sticker seal', price: 3, unit: 'flat' },
             { id: 'eyelet', name: 'Eyelet', price: 10, unit: 'piece' },
             { id: 'glossy-phototop', name: 'Glossy phototop', price: 20, unit: 'page' },
             { id: 'matte-phototop', name: 'Matte phototop', price: 20, unit: 'page' },
@@ -309,6 +351,7 @@
             'calendar-foil',
             'folded-insert',
             'trifold-insert',
+			'sticker-seal',
             'liner' // Added Liner to price per set
         ];
         
@@ -399,6 +442,15 @@
             document.getElementById('print-button').addEventListener('click', printQuote);
             document.getElementById('copy-button').addEventListener('click', copyQuotation);
             document.getElementById('copy-price-button').addEventListener('click', copyPriceSummary);
+			// Import quotation button
+			document.getElementById('import-button').addEventListener('click', importQuotation);
+
+			// Also allow pressing Ctrl+Enter in the textarea
+			document.getElementById('import-textarea').addEventListener('keydown', function(e) {
+			if (e.ctrlKey && e.key === 'Enter') {
+				importQuotation();
+			}
+			});
             
             updateSummary();
         });
@@ -657,16 +709,15 @@
             let payableSets = numberOfSets;
             let freeSets = 0;
             
-            // Apply discount logic
-            if (currentSelections.discount && currentSelections.paymentMethod === "direct-shipping") {
-                // Calculate free sets but don't give them for free, instead reduce payable sets
-                freeSets = calculateFreeSetsForDirectShipping(numberOfSets);
-                payableSets = numberOfSets - freeSets;
-            } else {
-                // Normal calculation
-                payableSets = numberOfSets;
-            }
-            
+            // Apply discount logic - for both direct-shipping and show all
+			if (currentSelections.discount && (currentSelections.paymentMethod === "direct-shipping" || currentSelections.paymentMethod === "none")) {
+				// Calculate free sets but don't give them for free, instead reduce payable sets
+				freeSets = calculateFreeSetsForDirectShipping(numberOfSets);
+				payableSets = numberOfSets - freeSets;
+			} else {
+				// Normal calculation
+				payableSets = numberOfSets;
+			}
             const setsTotal = totalPerSet * payableSets;
             
             // Calculate one-time fees (Map layout, layout fee, rush fee, and flat add-ons NOT in price per set)
@@ -719,15 +770,15 @@
             document.getElementById('summary-paper-line').textContent = `${currentSelections.paper.name} paper`;
             document.getElementById('summary-seal-line').textContent = currentSelections.seal.name;
             
-            // Update sets total display with discount logic
-            let setsTotalHTML = '';
-            if (currentSelections.discount && freeSets > 0) {
-                setsTotalHTML = `${numberOfSets} sets (pay for ${payableSets}) x ₱${totalPerSet} each = ₱${setsTotal}`;
-            } else {
-                setsTotalHTML = `${numberOfSets} sets x ₱${totalPerSet} each = ₱${setsTotal}`;
-            }
-            
-            document.getElementById('sets-total').innerHTML = setsTotalHTML;
+			// Update sets total display with discount logic
+			let setsTotalHTML = '';
+			if (currentSelections.discount && freeSets > 0 && (currentSelections.paymentMethod === "direct-shipping" || currentSelections.paymentMethod === "none")) {
+				setsTotalHTML = `${numberOfSets} sets (pay for ${payableSets}) x ₱${totalPerSet} each = ₱${setsTotal}`;
+			} else {
+				setsTotalHTML = `${numberOfSets} sets x ₱${totalPerSet} each = ₱${setsTotal}`;
+			}
+
+			document.getElementById('sets-total').innerHTML = setsTotalHTML;
             
             // Update one-time fees section (now placed before sets total)
             if (oneTimeFeesHTML) {
@@ -1044,68 +1095,66 @@
         }
         
         function copyPriceSummary() {
-            // Get price per set
-            const totalPerSet = parseInt(document.getElementById('price-per-set').textContent.replace('₱', '').replace(' each', ''));
-            
-            // Get all inclusions
-            const sizeText = document.getElementById('summary-size-line').textContent;
-            const envelopeText = document.getElementById('summary-envelope-line').textContent;
-            const insertsText = document.getElementById('summary-inserts-line').textContent;
-            const paperText = document.getElementById('summary-paper-line').textContent;
-            const sealText = document.getElementById('summary-seal-line').textContent;
-            
-            // Get add-ons summary (included in price per set)
-            let addonsInPricePerSet = '';
-            const addonsSummaryElement = document.getElementById('addons-summary');
-            if (addonsSummaryElement.children.length > 0) {
-                // Get only add-ons that are included in price per set
-                Object.keys(currentSelections.addons).forEach(addonId => {
-                    const addon = currentSelections.addons[addonId];
-                    
-                    if (addonId === 'map-layout') {
-                        // Map layout is NOT included in price per set
-                        return;
-                    }
-                    
-                    if (addon.unit === 'flat') {
-                        // Check if this flat add-on should be included in price per set
-                        if (flatAddonsInPricePerSet.includes(addonId)) {
-                            // These flat add-ons are included in price per set
-                            addonsInPricePerSet += `${addon.name}\n`;
-                        }
-                    } else {
-                        // For per-page/per-piece add-ons, add their price to price per set
-                        // Format: "X page(s)/pc(s) Addon Name" with correct grammar
-                        const unitText = addon.unit === 'page' ? (addon.quantity === 1 ? 'page' : 'pages') : 
-                                        (addon.quantity === 1 ? 'pc' : 'pcs');
-                        addonsInPricePerSet += `${addon.quantity} ${unitText} ${addon.name}\n`;
-                    }
-                });
-            }
-            
-            let priceSummaryText = `₱${totalPerSet} each\n`;
-            priceSummaryText += `${sizeText}\n`;
-            priceSummaryText += `${envelopeText}\n`;
-            priceSummaryText += `${insertsText}\n`;
-            priceSummaryText += `${paperText}\n`;
-            priceSummaryText += `${sealText}`;
-            
-            if (addonsInPricePerSet) {
-                priceSummaryText += `\n${addonsInPricePerSet}`;
-            }
-            
-            // Remove trailing newlines
-            priceSummaryText = priceSummaryText.trim();
-            
-            navigator.clipboard.writeText(priceSummaryText).then(() => {
-                const notification = document.getElemenstById('price-notification');
-                notification.classList.add('show');
-                setTimeout(() => notification.classList.remove('show'), 3000);
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-                alert('Failed to copy price summary to clipboard. Please try again.');
-            });
+    // Get price per set
+    const totalPerSet = parseInt(document.getElementById('price-per-set').textContent.replace('₱', '').replace(' each', ''));
+    
+    // Get all inclusions
+    const sizeText = document.getElementById('summary-size-line').textContent;
+    const envelopeText = document.getElementById('summary-envelope-line').textContent;
+    const insertsText = document.getElementById('summary-inserts-line').textContent;
+    const paperText = document.getElementById('summary-paper-line').textContent;
+    const sealText = document.getElementById('summary-seal-line').textContent;
+    
+    // Get add-ons summary (included in price per set)
+    let addonsInPricePerSet = '';
+    Object.keys(currentSelections.addons).forEach(addonId => {
+        const addon = currentSelections.addons[addonId];
+        
+        if (addonId === 'map-layout') {
+            // Map layout is NOT included in price per set
+            return;
         }
+        
+        if (addon.unit === 'flat') {
+            // Check if this flat add-on should be included in price per set
+            if (flatAddonsInPricePerSet.includes(addonId)) {
+                // These flat add-ons are included in price per set
+                if (addonsInPricePerSet) addonsInPricePerSet += "\n";
+                addonsInPricePerSet += `${addon.name}`;
+            }
+        } else {
+            // For per-page/per-piece add-ons, add their price to price per set
+            // Format: "X page(s)/pc(s) Addon Name" with correct grammar
+            const unitText = addon.unit === 'page' ? (addon.quantity === 1 ? 'page' : 'pages') : 
+                            (addon.quantity === 1 ? 'pc' : 'pcs');
+            if (addonsInPricePerSet) addonsInPricePerSet += "\n";
+            addonsInPricePerSet += `${addon.quantity} ${unitText} ${addon.name}`;
+        }
+    });
+    
+    // Build price summary text with NO extra spaces
+    let priceSummaryText = `₱${totalPerSet} each`;
+    priceSummaryText += `\n\n${sizeText}`;
+    priceSummaryText += `\n${envelopeText}`;
+    priceSummaryText += `\n${insertsText}`;
+    priceSummaryText += `\n${paperText}`;
+    priceSummaryText += `\n${sealText}`;
+    
+    if (addonsInPricePerSet) {
+        priceSummaryText += `\n${addonsInPricePerSet}`;
+    }
+    
+    
+    
+    navigator.clipboard.writeText(priceSummaryText).then(() => {
+        const notification = document.getElementById('price-notification');
+        notification.classList.add('show');
+        setTimeout(() => notification.classList.remove('show'), 3000);
+    }).catch(err => {
+        console.error('Failed to copy: ', err);
+        alert('Failed to copy price summary to clipboard. Please try again.');
+    });
+}
         
 function copyQuotation() {
     const sizePrice = currentSelections.size.price;
@@ -1215,11 +1264,14 @@ function copyQuotation() {
     let freeSets = 0;
     
     // Apply discount logic
-    if (currentSelections.discount && currentSelections.paymentMethod === "direct-shipping") {
+    if (currentSelections.paymentMethod === "direct-shipping" || currentSelections.paymentMethod === "none") {
         // Calculate free sets but don't give them for free, instead reduce payable sets
         freeSets = calculateFreeSetsForDirectShipping(numberOfSets);
-        payableSets = numberOfSets - freeSets;
-    } else {
+	}	
+		// If discount is checked AND payment method is direct-shipping or show all, subtract free sets
+if (currentSelections.discount && (currentSelections.paymentMethod === "direct-shipping" || currentSelections.paymentMethod === "none")) {
+    payableSets = numberOfSets - freeSets;
+} else {
         // Normal calculation
         payableSets = numberOfSets;
     }
@@ -1306,14 +1358,13 @@ function copyQuotation() {
         quotationText += `\n${addonsSummary.trim()}`;
     }
     
-    // Handle sets total
-    let setsTotalText = '';
-    if (currentSelections.discount && freeSets > 0) {
-        setsTotalText = `${numberOfSets} sets (pay for ${payableSets}) x ₱${totalPerSet} each = ₱${setsTotal}`;
-    } else {
-        setsTotalText = `${numberOfSets} sets x ₱${totalPerSet} each = ₱${setsTotal}`;
-    }
-    
+	// Handle sets total
+	let setsTotalText = '';
+	if (currentSelections.discount && freeSets > 0 && (currentSelections.paymentMethod === "direct-shipping" || currentSelections.paymentMethod === "none")) {
+		setsTotalText = `${numberOfSets} sets (pay for ${payableSets}) x ₱${totalPerSet} each = ₱${setsTotal}`;
+	} else {
+		setsTotalText = `${numberOfSets} sets x ₱${totalPerSet} each = ₱${setsTotal}`;
+	}
     quotationText += `\n\n${setsTotalText}`;
     
     // Add layout, rush, and additional pages info (remove empty lines from oneTimeFeesText)
@@ -1388,8 +1439,15 @@ function copyQuotation() {
         quotationText += `\n\nLocation: ${locationName}`;
     }
     
-    // Remove multiple consecutive empty lines and trim
-    quotationText = quotationText.replace(/\n\n\n+/g, '\n\n').trim();
+    // Remove ALL extra line spaces - this is the key change
+    // Replace multiple consecutive newlines with just one newline
+    quotationText = quotationText.replace(/\n\n\n+/g, '');
+    
+    // Also replace any triple newlines with double newlines
+    quotationText = quotationText.replace(/\n\n\n/g, '');
+    
+    // Trim any leading/trailing whitespace
+    quotationText = quotationText.trim();
     
     navigator.clipboard.writeText(quotationText).then(() => {
         const notification = document.getElementById('notification');
@@ -1401,7 +1459,355 @@ function copyQuotation() {
     });
 }
         
-        function printQuote() {
+        function importQuotation() {
+    const importText = document.getElementById('import-textarea').value.trim();
+    if (!importText) {
+        alert('Please paste a quotation summary to import.');
+        return;
+    }
+    
+    try {
+        // Parse the quotation text
+        const lines = importText.split('\n').map(line => line.trim()).filter(line => line);
+        
+        // Reset to defaults first
+        resetSelections();
+        
+        // Parse event type
+        for (const line of lines) {
+            if (line.toLowerCase().includes('wedding')) {
+                selectOptionCard('event-type-options', 'wedding');
+                break;
+            } else if (line.toLowerCase().includes('debut')) {
+                selectOptionCard('event-type-options', 'debut');
+                break;
+            } else if (line.toLowerCase().includes('birthday')) {
+                selectOptionCard('event-type-options', 'birthday');
+                break;
+            } else if (line.toLowerCase().includes('baptism')) {
+                selectOptionCard('event-type-options', 'baptism');
+                break;
+            } else if (line.toLowerCase().includes('special event')) {
+                selectOptionCard('event-type-options', 'special-event');
+                break;
+            }
+        }
+        
+        // Parse size
+        for (const line of lines) {
+            if (line.toLowerCase().includes('4r') && !line.toLowerCase().includes('5r')) {
+                selectOptionCard('size-options', '4r');
+                break;
+            } else if (line.toLowerCase().includes('5r')) {
+                selectOptionCard('size-options', '5r');
+                break;
+            }
+        }
+        
+        // Parse envelope
+        const envelopeMap = {
+            'no envelope': 'no-envelope',
+            'plain white': 'plain-white',
+            'premium portrait colored': 'premium-portrait-colored',
+			'portrait colored': 'portrait-colored',
+            'transparent': 'transparent',
+            'premium colored': 'premium-colored',
+			'colored': 'colored',
+            'gatefold': 'gatefold',
+            'pocket cover': 'pocket-cover',
+            'pouch cover': 'pouch-cover',
+            'trifold': 'trifold',
+            'vellum cover with print': 'vellum-cover-print',
+			'vellum cover': 'vellum-cover'
+        };
+        
+        for (const line of lines) {
+            const lowerLine = line.toLowerCase();
+            for (const [key, value] of Object.entries(envelopeMap)) {
+                if (lowerLine.includes(key) && lowerLine.includes('envelope')) {
+                    selectOptionCard('envelope-options', value);
+                    break;
+                }
+            }
+        }
+        
+        // Parse inserts count
+        for (const line of lines) {
+            const insertMatch = line.match(/(\d+)\s*inserts?/i);
+            if (insertMatch) {
+                const insertCount = parseInt(insertMatch[1]);
+                document.getElementById('inserts-slider').value = insertCount;
+                document.getElementById('inserts-value').textContent = `${insertCount} insert${insertCount !== 1 ? 's' : ''}`;
+                currentSelections.inserts = { value: insertCount, price: insertCount * INSERT_PRICE };
+                break;
+            }
+        }
+        
+        // Parse paper type
+        const paperMap = {
+    'matte textured': 'matte-textured',
+    'glossy textured': 'glossy-textured',
+    'premium matte': 'premium-matte',
+    'matte': 'matte',
+    'glossy': 'glossy'
+};
+
+         for (const line of lines) {
+            const lowerLine = line.toLowerCase();
+        
+        for (const [key, value] of Object.entries(paperMap)) {
+            if (lowerLine.includes(key) && lowerLine.includes('paper')) {
+                selectOptionCard('paper-options', paperMap[key]);
+                break;
+            }
+        }
+         }
+        
+    
+
+
+        
+        // Parse seal
+        const sealMap = {
+            'no seal': 'no-seal',
+            'sticker seal': 'sticker-seal',
+            'belt': 'belt',
+            'wax seal with string and flower': 'wax-seal-string-flower',
+            'belt with print': 'belt-print',
+            'frosted belt': 'frosted-belt',
+            'ribbon': 'ribbon',
+            'printed tag': 'printed-tag',
+            'jute string': 'jute-string',
+            'wax seal with flower': 'wax-seal-flower',
+            'frosted belt with print': 'frosted-belt-print',
+            'frayed ribbon': 'frayed-ribbon',
+            'wax seal with string': 'wax-seal-string',
+            'wax seal': 'wax-seal'
+        };
+        
+        for (const line of lines) {
+            const lowerLine = line.toLowerCase();
+            for (const [key, value] of Object.entries(sealMap)) {
+                if (lowerLine.includes(key)) {
+                    selectOptionCard('seal-options', value);
+                    break;
+                }
+            }
+        }
+        
+        // Parse number of sets
+        for (const line of lines) {
+            const setsMatch = line.match(/(\d+)\s*sets?/i);
+            if (setsMatch) {
+                const setsCount = parseInt(setsMatch[1]);
+                document.getElementById('sets-input').value = setsCount;
+                numberOfSets = setsCount;
+                break;
+            }
+        }
+        
+        // Parse event date
+        for (const line of lines) {
+            if (line.toLowerCase().includes('event date:')) {
+                const dateMatch = line.match(/Event Date:\s*(.+)/i);
+                if (dateMatch) {
+                    // Try to parse the date
+                    const dateText = dateMatch[1].trim();
+                    const dateObj = new Date(dateText);
+                    if (!isNaN(dateObj.getTime())) {
+                        // Format as YYYY-MM-DD for the date input
+                        const year = dateObj.getFullYear();
+                        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                        const day = String(dateObj.getDate()).padStart(2, '0');
+                        eventDate = `${year}-${month}-${day}`;
+                        document.getElementById('event-date-input').value = eventDate;
+                    }
+                }
+                break;
+            }
+        }
+        
+        // Parse location
+        for (const line of lines) {
+            if (line.toLowerCase().includes('location:')) {
+                const locationMatch = line.match(/Location:\s*(.+)/i);
+                if (locationMatch) {
+                    const locationText = locationMatch[1].trim().toLowerCase();
+                    const locationMap = {
+                        'ncr': 'ncr',
+                        'north luzon': 'north-luzon',
+                        'central luzon': 'central-luzon',
+                        'south luzon': 'south-luzon',
+                        'visayas': 'visayas',
+                        'mindanao': 'mindanao'
+                    };
+                    
+                    for (const [key, value] of Object.entries(locationMap)) {
+                        if (locationText.includes(key)) {
+                            document.getElementById('location-select').value = value;
+                            currentSelections.location = value;
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+        
+        // Parse discount
+        const hasDiscount = lines.some(line => 
+            line.toLowerCase().includes('discount') && 
+            line.toLowerCase().includes('pay for')
+        );
+        
+        if (hasDiscount) {
+            document.getElementById('discount-checkbox').checked = true;
+            currentSelections.discount = true;
+            
+            // Try to extract discount details
+            for (const line of lines) {
+                if (line.toLowerCase().includes('pay for') && line.toLowerCase().includes('receive')) {
+                    const payMatch = line.match(/pay for\s*(\d+)/i);
+                    const receiveMatch = line.match(/receive\s*(\d+)/i);
+                    if (payMatch && receiveMatch) {
+                        const payFor = parseInt(payMatch[1]);
+                        const receive = parseInt(receiveMatch[1]);
+                        if (receive > payFor) {
+                            numberOfSets = receive;
+                            document.getElementById('sets-input').value = receive;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        
+        // Parse payment method
+        const hasDirectShipping = lines.some(line => line.toLowerCase().includes('direct shipping'));
+        const hasShopeeCheckout = lines.some(line => line.toLowerCase().includes('shopee checkout'));
+        
+        if (hasDirectShipping && hasShopeeCheckout) {
+            selectOptionCard('payment-method-options', 'none'); // Show All
+        } else if (hasDirectShipping) {
+            selectOptionCard('payment-method-options', 'direct-shipping');
+        } else if (hasShopeeCheckout && lines.some(line => line.toLowerCase().includes('full payment'))) {
+            selectOptionCard('payment-method-options', 'shopee-checkout-full');
+        } else if (hasShopeeCheckout) {
+            selectOptionCard('payment-method-options', 'shopee-checkout');
+        }
+        
+        // Parse add-ons (simplified version)
+        // Note: This is a basic implementation - you may need to enhance it for complex add-ons
+        const addonLines = lines.filter(line => {
+            const lowerLine = line.toLowerCase();
+            return addonsData.some(addon => lowerLine.includes(addon.name.toLowerCase()));
+        });
+        
+        // Clear existing add-ons
+        document.querySelectorAll('.addon-checkbox').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        document.querySelectorAll('.addon-input').forEach(input => {
+            input.value = 1;
+            input.disabled = true;
+        });
+        currentSelections.addons = {};
+        
+        // Process add-on lines
+        addonLines.forEach(line => {
+            const lowerLine = line.toLowerCase();
+            
+            addonsData.forEach(addon => {
+                if (lowerLine.includes(addon.name.toLowerCase())) {
+                    // Check for quantity in the line
+                    let quantity = 1;
+                    const quantityMatch = line.match(/(\d+)\s*(?:page|pages|pc|pcs)/i);
+                    if (quantityMatch) {
+                        quantity = parseInt(quantityMatch[1]);
+                    }
+                    
+                    // Find and check the checkbox
+                    const checkbox = document.getElementById(`addon-${addon.id}`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                        
+                        // Enable and set quantity input if exists
+                        const quantityInput = document.getElementById(`qty-${addon.id}`);
+                        if (quantityInput) {
+                            quantityInput.disabled = false;
+                            quantityInput.value = quantity;
+                        }
+                        
+                        // Update current selections
+                        currentSelections.addons[addon.id] = {
+                            name: addon.name,
+                            price: addon.price,
+                            unit: addon.unit,
+                            quantity: quantity
+                        };
+                    }
+                }
+            });
+        });
+        
+        // Update the summary
+        updateSummary();
+        updateEventDateDisplay();
+        updateEventTypeTitle();
+        
+        // Save to localStorage
+        saveToLocalStorage();
+        
+        // Show success message
+        alert('Quotation imported successfully!');
+        
+    } catch (error) {
+        console.error('Error importing quotation:', error);
+        alert('Error importing quotation. Please check the format and try again.');
+    }
+}
+
+// Helper function to select option cards
+function selectOptionCard(containerId, value) {
+    const container = document.getElementById(containerId);
+    const optionCards = container.querySelectorAll('.option-card');
+    optionCards.forEach(card => {
+        if (card.getAttribute('data-value') === value) {
+            card.classList.add('selected');
+            
+            // Update current selections based on container type
+            if (containerId === 'event-type-options') {
+                const price = parseInt(card.getAttribute('data-price'));
+                const name = card.querySelector('.option-name').textContent;
+                currentSelections.eventType = { value: value, price: price, name: name };
+            } else if (containerId === 'size-options') {
+                const price = parseInt(card.getAttribute('data-price'));
+                const name = card.querySelector('.option-name').textContent;
+                currentSelections.size = { value: value, price: price, name: name };
+            } else if (containerId === 'envelope-options') {
+                const price = parseInt(card.getAttribute('data-price'));
+                const name = card.querySelector('.option-name').textContent;
+                currentSelections.envelope = { value: value, price: price, name: name };
+            } else if (containerId === 'paper-options') {
+                const price = parseInt(card.getAttribute('data-price'));
+                const name = card.querySelector('.option-name').textContent;
+                currentSelections.paper = { value: value, price: price, name: name };
+            } else if (containerId === 'seal-options') {
+                const price = parseInt(card.getAttribute('data-price'));
+                const name = card.querySelector('.option-name').textContent;
+                currentSelections.seal = { value: value, price: price, name: name };
+            } else if (containerId === 'payment-method-options') {
+                currentSelections.paymentMethod = value;
+            }
+        } else {
+            card.classList.remove('selected');
+        }
+    });
+}
+		
+		
+		
+		function printQuote() {
             window.print();
         }
     </script>
