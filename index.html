@@ -148,6 +148,92 @@
                         <div class="option-card" data-value="premium-portrait-colored" data-price="45"><div class="option-name">Premium portrait colored</div></div>
                     </div>
                 </div>
+  
+				<input type="checkbox" id="envelope-checkbox" style="vertical-align: middle;">
+				<label for="envelope-checkbox" ></label style="vertical-align: middle; margin-right: 10px;">
+				<select class="select-input" id="color-select" style="vertical-align: middle; height: 40px; width: 160px; font-size: 15px; margin-right: 10px;">
+					<option value="">Select color</option>
+					<option value="Amethyst">Amethyst</option>
+					<option value="Asea 44">Asea 44</option>
+					<option value="Apple green">Apple green</option>
+					<option value="Argilla">Argilla</option>
+					<option value="Azure">Azure</option>
+					<option value="Baltic sea">Baltic sea</option>
+					<option value="Beige">Beige</option>
+					<option value="Biscuit">Biscuit</option>
+					<option value="Black">Black</option>
+					<option value="Black nero">Black nero</option>
+					<option value="Blush">Blush</option>
+					<option value="Blush pink">Blush pink</option>
+					<option value="Bordeaux">Bordeaux</option>
+					<option value="Bronze">Bronze</option>
+					<option value="Brown">Brown</option>
+					<option value="Burgundy">Burgundy</option>
+					<option value="Burnt orange">Burnt orange</option>
+					<option value="Carmine">Carmine</option>
+					<option value="Champagne">Champagne</option>
+					<option value="Cherry red">Cherry red</option>
+					<option value="Coffee brown">Coffee brown</option>
+					<option value="Copper">Copper</option>
+					<option value="Cream">Cream</option>
+					<option value="Dark brown">Dark brown</option>
+					<option value="Dark gold">Dark gold</option>
+					<option value="Dark gray">Dark gray</option>
+					<option value="Dark green">Dark green</option>
+					<option value="Dark red">Dark red</option>
+					<option value="Dusty blue">Dusty blue</option>
+					<option value="Emerald green">Emerald green</option>
+					<option value="Flamingo">Flamingo</option>
+					<option value="Forest green">Forest green</option>
+					<option value="Gold">Gold</option>
+					<option value="Ivory">Ivory</option>
+					<option value="Kraft">Kraft</option>
+					<option value="Kraft gold">Kraft gold</option>
+					<option value="Light blue">Light blue</option>
+					<option value="Light dusty-blue">Light dusty blue</option>
+					<option value="Light pink">Light pink</option>
+					<option value="Light taupe">Light taupe</option>
+					<option value="Lime green">Lime green</option>
+					<option value="Maroon">Maroon</option>
+					<option value="Midnight blue">Midnight blue</option>
+					<option value="Misty rose">Misty rose</option>
+					<option value="Mustard">Mustard</option>
+					<option value="Navy blue">Navy blue</option>
+					<option value="Old rose">Old rose</option>
+					<option value="Olive green">Olive green</option>
+					<option value="Peacock gold">Peacock gold</option>
+					<option value="Pink">Pink</option>
+					<option value="Plum">Plum</option>
+					<option value="Purple">Purple</option>
+					<option value="Red">Red</option>
+					<option value="Red fever">Red fever</option>
+					<option value="Rosebud">Rosebud</option>
+					<option value="Rosegold">Rosegold</option>
+					<option value="Rosequartz">Rosequartz</option>
+					<option value="Rosso">Rosso</option>
+					<option value="Royal blue">Royal blue</option>
+					<option value="Rust">Rust</option>
+					<option value="Sage green">Sage green</option>
+					<option value="Silver">Silver</option>
+					<option value="Sirio gold">Sirio gold</option>
+					<option value="Stardream azalea fuchsia">Stardream Azalea (Fuchsia)</option>
+					<option value="Stone gray">Stone gray</option>
+					<option value="Tan">Tan</option>
+					<option value="Teal green">Teal green</option>
+					<option value="Verde">Verde</option>
+					<option value="Vista">Vista</option>
+					<option value="White">White</option>
+					<option value="Yellow gold">Yellow gold</option>
+
+				</select>
+				<select class="select-input" id="texture-select" style="vertical-align: middle; height: 40px; width: 160px; font-size: 15px; margin-right: 10px;">
+					<option value="">Select texture</option>
+					<option value="Matte">Matte</option>
+					<option value="Glossy">Glossy</option>
+					<option value="Textured">Textured</option>
+				</select>
+
+			
                 <div class="option-group"><label class="option-label">4. Number of Inserts</label>
                     <div class="slider-container"><input type="range" id="inserts-slider" min="0" max="10" value="0" step="1"><div class="slider-value" id="inserts-value">0 inserts</div></div>
                 </div>
@@ -295,7 +381,7 @@
         let currentSelections = {
             eventType: { value: "wedding", price: 0, name: "Wedding" },
             size: { value: "4r", price: 0, name: "4R" },
-            envelope: { value: "plain-white", price: 0, name: "Plain white" },
+            envelope: { value: "plain-white", price: 0, name: "Plain white", custom: false, color: "", texture: "" },
             inserts: { value: 0, price: 0 },
             paper: { value: "matte", price: 0, name: "Matte" },
             seal: { value: "no-seal", price: 0, name: "No seal" },
@@ -338,8 +424,12 @@
             { id: 'liner', name: 'Liner', price: 20, unit: 'flat' },
             { id: 'arc-cut', name: 'Arc cut', price: 5, unit: 'page' },
             { id: 'gold-foil', name: 'Gold foil', price: 15, unit: 'page' },
+            { id: 'silver-foil', name: 'Silver foil', price: 15, unit: 'page' },			
+            { id: 'rosegold-foil', name: 'Rosegold foil', price: 15, unit: 'page' },			
             { id: 'gold-foil-full-page', name: 'Gold foil full page', price: 20, unit: 'page' },
-            { id: 'envelope-print', name: 'Envelope print', price: 10, unit: 'flat' } // Added envelope print
+            { id: 'silver-foil-full-page', name: 'Silver foil full page', price: 20, unit: 'page' },			
+            { id: 'rosegold-foil-full-page', name: 'Rosegold foil full page', price: 20, unit: 'page' },			
+            { id: 'envelope-print', name: 'Envelope print', price: 10, unit: 'flat' }
         ];
         
         // List of flat add-ons that should be included in price per set (excluding Map layout)
@@ -381,7 +471,25 @@
             // Initialize add-ons
             initializeAddons();
             
-            document.getElementById('inserts-slider').addEventListener('input', function() {
+           document.getElementById('envelope-checkbox').addEventListener('change', function() {
+                currentSelections.envelope.custom = this.checked;
+                updateSummary();
+                saveToLocalStorage();
+            });
+			
+			document.getElementById('color-select').addEventListener('change', function() {
+                currentSelections.envelope.color = this.value;
+                updateSummary();
+                saveToLocalStorage();
+            });
+			
+			document.getElementById('texture-select').addEventListener('change', function() {
+                currentSelections.envelope.texture = this.value;
+                updateSummary();
+                saveToLocalStorage();
+            });
+			
+			document.getElementById('inserts-slider').addEventListener('input', function() {
                 const insertCount = parseInt(this.value);
                 const insertPrice = insertCount * INSERT_PRICE;
                 document.getElementById('inserts-value').textContent = `${insertCount} insert${insertCount !== 1 ? 's' : ''}`;
@@ -615,8 +723,28 @@
             const sealPrice = currentSelections.seal.price;
             
             // Fix for envelope display
-            const envelopeName = currentSelections.envelope.name;
-            const envelopeDisplay = envelopeName === "No envelope" ? "No envelope" : `${envelopeName} Envelope`;
+			let envelopeDisplay = "";
+			const envelopeName = currentSelections.envelope.name;
+
+			if (envelopeName === "No envelope") {
+				envelopeDisplay = "No envelope";
+			} else {
+				if (currentSelections.envelope.custom && 
+					(currentSelections.envelope.color || currentSelections.envelope.texture)) {
+					// Build custom envelope display
+					const parts = [];
+					if (currentSelections.envelope.color) parts.push(currentSelections.envelope.color);
+					if (currentSelections.envelope.texture) parts.push(currentSelections.envelope.texture);
+					parts.push(envelopeName);
+        
+					envelopeDisplay = parts.join(' ') + " Envelope";
+				} else {
+					envelopeDisplay = `${envelopeName} Envelope`;
+				}
+			}
+
+			// Update the display
+			document.getElementById('summary-envelope-line').textContent = envelopeDisplay;
             
             // Calculate add-ons total
             calculateAddonsTotal();
@@ -945,6 +1073,13 @@
                     card.classList.remove('selected');
                 }
             });
+			
+			// Update envelope customization UI
+			if (currentSelections.envelope) {
+				document.getElementById('envelope-checkbox').checked = currentSelections.envelope.custom || false;
+				document.getElementById('color-select').value = currentSelections.envelope.color || "";
+				document.getElementById('texture-select').value = currentSelections.envelope.texture || "";
+			}
             
             // Update inserts slider
             document.getElementById('inserts-slider').value = currentSelections.inserts.value;
@@ -977,6 +1112,16 @@
             // Update rush checkbox and dropdown
             document.getElementById('rush-checkbox').checked = currentSelections.rush.required;
             document.getElementById('rush-type').value = currentSelections.rush.type;
+			
+			// Update layout dropdown
+			if (currentSelections.layout && currentSelections.layout.type) {
+				document.getElementById('layout-type').value = currentSelections.layout.type;
+			}
+
+			// Update rush dropdown
+			if (currentSelections.rush && currentSelections.rush.type) {
+				document.getElementById('rush-type').value = currentSelections.rush.type;
+			}
             
             // Update discount checkbox
             document.getElementById('discount-checkbox').checked = currentSelections.discount;
@@ -1034,7 +1179,7 @@
             const envelopeCards = document.querySelectorAll('#envelope-options .option-card');
             envelopeCards.forEach(card => card.classList.remove('selected'));
             envelopeCards[1].classList.add('selected');
-            currentSelections.envelope = { value: "plain-white", price: 0, name: "Plain white" };
+            currentSelections.envelope = { value: "plain-white", price: 0, name: "Plain white", custom: false, color: "", texture: "" };
             
             document.getElementById('inserts-slider').value = 0;
             document.getElementById('inserts-value').textContent = '0 inserts';
@@ -1060,7 +1205,10 @@
             });
             currentSelections.addons = {};
             
-            document.getElementById('layout-checkbox').checked = false;
+            document.getElementById('envelope-checkbox').checked = false;
+			document.getElementById('color-select').value = "";
+			document.getElementById('texture-select').value = "";
+			document.getElementById('layout-checkbox').checked = false;
             document.getElementById('layout-type').value = "no-layout";
             document.getElementById('rush-checkbox').checked = false;
             document.getElementById('rush-type').value = "no-layout";
@@ -1069,7 +1217,13 @@
             currentSelections.rush = { required: false, type: "no-layout" };
             currentSelections.discount = false;
             
-            // Reset payment method
+            // Reset layout and rush dropdowns
+			document.getElementById('layout-type').value = "no-layout";
+			document.getElementById('rush-type').value = "no-layout";
+			currentSelections.layout = { required: false, type: "no-layout", pages: 1 };
+			currentSelections.rush = { required: false, type: "no-layout" };
+			
+			// Reset payment method
             const paymentMethodCards = document.querySelectorAll('#payment-method-options .option-card');
             paymentMethodCards.forEach(card => card.classList.remove('selected'));
             paymentMethodCards[0].classList.add('selected');
@@ -1081,6 +1235,9 @@
             
             document.getElementById('sets-input').value = 20;
             numberOfSets = 20;
+			
+			// Clear import textarea
+			document.getElementById('import-textarea').value = "";
             
             // Clear event date
             document.getElementById('event-date-input').value = "";
@@ -1338,7 +1495,17 @@ if (currentSelections.discount && (currentSelections.paymentMethod === "direct-s
     
     // Fix envelope display
     const envelopeName = currentSelections.envelope.name;
-    const envelopeDisplay = envelopeName === "No envelope" ? "No envelope" : `${envelopeName} Envelope`;
+    let envelopeDisplay = "";
+
+    if (envelopeName === "No envelope") {
+        envelopeDisplay = "No envelope";
+    } else if (currentSelections.envelope.custom) {
+        // Format: "Color Texture Envelope Name Envelope"
+        // Example: "Blue Matte Premium colored Envelope"
+        envelopeDisplay = `${currentSelections.envelope.color} ${currentSelections.envelope.texture} ${envelopeName} Envelope`;
+    } else {
+        envelopeDisplay = `${envelopeName} Envelope`;
+    }
     
     // Build quotation text with proper formatting
     let quotationText = `${eventTitle}`;
@@ -1459,7 +1626,81 @@ if (currentSelections.discount && (currentSelections.paymentMethod === "direct-s
     });
 }
         
-        function importQuotation() {
+        function resetSelectionsOnly() {
+    const eventTypeCards = document.querySelectorAll('#event-type-options .option-card');
+    eventTypeCards.forEach(card => card.classList.remove('selected'));
+    eventTypeCards[0].classList.add('selected');
+    currentSelections.eventType = { value: "wedding", price: 0, name: "Wedding" };
+    updateEventTypeTitle();
+    
+    const sizeCards = document.querySelectorAll('#size-options .option-card');
+    sizeCards.forEach(card => card.classList.remove('selected'));
+    sizeCards[0].classList.add('selected');
+    currentSelections.size = { value: "4r", price: 0, name: "4R" };
+    
+    const envelopeCards = document.querySelectorAll('#envelope-options .option-card');
+    envelopeCards.forEach(card => card.classList.remove('selected'));
+    envelopeCards[1].classList.add('selected');
+    currentSelections.envelope = { value: "plain-white", price: 0, name: "Plain white", custom: false, color: "", texture: "" };
+    
+    document.getElementById('inserts-slider').value = 0;
+    document.getElementById('inserts-value').textContent = '0 inserts';
+    currentSelections.inserts = { value: 0, price: 0 };
+    
+    const paperCards = document.querySelectorAll('#paper-options .option-card');
+    paperCards.forEach(card => card.classList.remove('selected'));
+    paperCards[0].classList.add('selected');
+    currentSelections.paper = { value: "matte", price: 0, name: "Matte" };
+    
+    const sealCards = document.querySelectorAll('#seal-options .option-card');
+    sealCards.forEach(card => card.classList.remove('selected'));
+    sealCards[0].classList.add('selected');
+    currentSelections.seal = { value: "no-seal", price: 0, name: "No seal" };
+    
+    // Reset add-ons
+    document.querySelectorAll('.addon-checkbox').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    document.querySelectorAll('.addon-input').forEach(input => {
+        input.value = 1;
+        input.disabled = true;
+    });
+    currentSelections.addons = {};
+    
+    document.getElementById('envelope-checkbox').checked = false;
+    document.getElementById('color-select').value = "";
+    document.getElementById('texture-select').value = "";
+    document.getElementById('layout-checkbox').checked = false;
+    document.getElementById('layout-type').value = "no-layout";
+    document.getElementById('rush-checkbox').checked = false;
+    document.getElementById('rush-type').value = "no-layout";
+    document.getElementById('discount-checkbox').checked = false;
+    currentSelections.layout = { required: false, type: "no-layout", pages: 1 };
+    currentSelections.rush = { required: false, type: "no-layout" };
+    currentSelections.discount = false;
+    
+    // Reset payment method
+    const paymentMethodCards = document.querySelectorAll('#payment-method-options .option-card');
+    paymentMethodCards.forEach(card => card.classList.remove('selected'));
+    paymentMethodCards[0].classList.add('selected');
+    currentSelections.paymentMethod = "none";
+    
+    // Reset location
+    document.getElementById('location-select').value = "";
+    currentSelections.location = "";
+    
+    document.getElementById('sets-input').value = 20;
+    numberOfSets = 20;
+    
+    // Clear event date
+    document.getElementById('event-date-input').value = "";
+    eventDate = "";
+    updateEventDateDisplay();
+    
+    updateSummary();
+}
+		
+		function importQuotation() {
     const importText = document.getElementById('import-textarea').value.trim();
     if (!importText) {
         alert('Please paste a quotation summary to import.');
@@ -1471,7 +1712,7 @@ if (currentSelections.discount && (currentSelections.paymentMethod === "direct-s
         const lines = importText.split('\n').map(line => line.trim()).filter(line => line);
         
         // Reset to defaults first
-        resetSelections();
+        resetSelectionsOnly();
         
         // Parse event type
         for (const line of lines) {
@@ -1505,31 +1746,125 @@ if (currentSelections.discount && (currentSelections.paymentMethod === "direct-s
         }
         
         // Parse envelope
-        const envelopeMap = {
-            'no envelope': 'no-envelope',
-            'plain white': 'plain-white',
-            'premium portrait colored': 'premium-portrait-colored',
-			'portrait colored': 'portrait-colored',
-            'transparent': 'transparent',
-            'premium colored': 'premium-colored',
-			'colored': 'colored',
-            'gatefold': 'gatefold',
-            'pocket cover': 'pocket-cover',
-            'pouch cover': 'pouch-cover',
-            'trifold': 'trifold',
-            'vellum cover with print': 'vellum-cover-print',
-			'vellum cover': 'vellum-cover'
-        };
+const envelopeMap = {
+    'no envelope': 'no-envelope',
+    'plain white': 'plain-white',
+    'premium portrait colored': 'premium-portrait-colored',
+    'portrait colored': 'portrait-colored',
+    'transparent': 'transparent',
+    'premium colored': 'premium-colored',
+    'colored': 'colored',
+    'gatefold': 'gatefold',
+    'pocket cover': 'pocket-cover',
+    'pouch cover': 'pouch-cover',
+    'trifold': 'trifold',
+    'vellum cover with print': 'vellum-cover-print',
+    'vellum cover': 'vellum-cover'
+};
+
+let envelopeFound = false;
+for (const line of lines) {
+    const lowerLine = line.toLowerCase();
+    
+    // First check for "no envelope"
+    if (lowerLine.includes('no envelope')) {
+        selectOptionCard('envelope-options', 'no-envelope');
+        // Reset custom envelope
+        currentSelections.envelope.custom = false;
+        currentSelections.envelope.color = "";
+        currentSelections.envelope.texture = "";
+        document.getElementById('envelope-checkbox').checked = false;
+        document.getElementById('color-select').value = "";
+        document.getElementById('texture-select').value = "";
+        envelopeFound = true;
+        break;
+    }
+    
+    // Check for specific envelope types
+    for (const [key, value] of Object.entries(envelopeMap)) {
+        if (lowerLine.includes(key) && lowerLine.includes('envelope')) {
+            selectOptionCard('envelope-options', value);
+            
+            // IMPORTANT: Store the envelope type first
+            const envelopeName = document.querySelector(`#envelope-options .option-card[data-value="${value}"] .option-name`).textContent;
+            currentSelections.envelope.name = envelopeName;
+            
+            // Parse custom envelope details from this line
+            parseCustomEnvelopeDetails(line);
+            
+            envelopeFound = true;
+            break;
+        }
+    }
+    
+    if (envelopeFound) break;
+}
         
-        for (const line of lines) {
-            const lowerLine = line.toLowerCase();
-            for (const [key, value] of Object.entries(envelopeMap)) {
-                if (lowerLine.includes(key) && lowerLine.includes('envelope')) {
-                    selectOptionCard('envelope-options', value);
+        // Helper function to parse custom envelope details
+function parseCustomEnvelopeDetails(line) {
+    const lineLower = line.toLowerCase();
+    
+    // Check if this is "No envelope" first - if so, don't enable custom
+    if (lineLower.includes('no envelope')) {
+        currentSelections.envelope.custom = false;
+        currentSelections.envelope.color = "";
+        currentSelections.envelope.texture = "";
+        document.getElementById('envelope-checkbox').checked = false;
+        document.getElementById('color-select').value = "";
+        document.getElementById('texture-select').value = "";
+        return;
+    }
+    
+    // Start with custom envelope disabled by default
+    currentSelections.envelope.custom = false;
+    currentSelections.envelope.color = "";
+    currentSelections.envelope.texture = "";
+    
+    // Check for color matches
+    const colorSelect = document.getElementById('color-select');
+    for (const option of colorSelect.options) {
+        if (option.value && option.value !== "") {
+            // Convert color to lowercase for comparison
+            const colorLower = option.value.toLowerCase();
+            
+            // Check if this color appears in the line
+            if (lineLower.includes(colorLower)) {
+                currentSelections.envelope.color = option.value;
+                break;
+            }
+            
+            // Also check for partial matches (for multi-word colors)
+            const colorWords = colorLower.split(' ');
+            for (const word of colorWords) {
+                if (word.length > 3 && lineLower.includes(word)) {
+                    currentSelections.envelope.color = option.value;
                     break;
                 }
             }
         }
+    }
+    
+    // Check for texture matches
+    if (lineLower.includes('matte') && !lineLower.includes('premium matte')) {
+        currentSelections.envelope.texture = "Matte";
+    } else if (lineLower.includes('glossy')) {
+        currentSelections.envelope.texture = "Glossy";
+    } else if (lineLower.includes('textured')) {
+        currentSelections.envelope.texture = "Textured";
+    }
+    
+    // Enable custom envelope checkbox if either color or texture was found
+    // AND if this is not a "No envelope" selection
+    if (currentSelections.envelope.color || currentSelections.envelope.texture) {
+        // But only if the envelope type is not "no-envelope"
+        if (currentSelections.envelope.value !== 'no-envelope') {
+            currentSelections.envelope.custom = true;
+            document.getElementById('envelope-checkbox').checked = true;
+            document.getElementById('color-select').value = currentSelections.envelope.color;
+            document.getElementById('texture-select').value = currentSelections.envelope.texture;
+        }
+    }
+}
         
         // Parse inserts count
         for (const line of lines) {
@@ -1682,7 +2017,53 @@ if (currentSelections.discount && (currentSelections.paymentMethod === "direct-s
             }
         }
         
-        // Parse payment method
+        // Parse layout type
+for (const line of lines) {
+    if (line.toLowerCase().includes('own layout')) {
+        document.getElementById('layout-type').value = 'own-layout';
+        currentSelections.layout.type = 'own-layout';
+        break;
+    } else if (line.toLowerCase().includes('layout fee') || 
+               line.toLowerCase().includes('free layout')) {
+        // If there's any mention of layout fee or free layout, assume no-layout
+        document.getElementById('layout-type').value = 'no-layout';
+        currentSelections.layout.type = 'no-layout';
+        break;
+    }
+}
+
+// Parse rush type
+for (const line of lines) {
+    if (line.toLowerCase().includes('rush fee')) {
+        // Check if it's "own layout" rush or regular rush
+        if (lines.some(l => l.toLowerCase().includes('own layout') && 
+                           l.toLowerCase().includes('rush'))) {
+            document.getElementById('rush-type').value = 'own-layout';
+            currentSelections.rush.type = 'own-layout';
+        } else {
+            document.getElementById('rush-type').value = 'no-layout';
+            currentSelections.rush.type = 'no-layout';
+        }
+        
+        // Also check the rush checkbox if rush fee is mentioned
+        document.getElementById('rush-checkbox').checked = true;
+        currentSelections.rush.required = true;
+        break;
+    }
+}
+
+// Also check for layout checkbox based on layout fee or free layout
+for (const line of lines) {
+    if (line.toLowerCase().includes('layout fee:') || 
+        line.toLowerCase().includes('free layout') ||
+        line.toLowerCase().includes('own layout')) {
+        document.getElementById('layout-checkbox').checked = true;
+        currentSelections.layout.required = true;
+        break;
+    }
+}
+		
+		// Parse payment method
         const hasDirectShipping = lines.some(line => line.toLowerCase().includes('direct shipping'));
         const hasShopeeCheckout = lines.some(line => line.toLowerCase().includes('shopee checkout'));
         
@@ -1758,7 +2139,12 @@ if (currentSelections.discount && (currentSelections.paymentMethod === "direct-s
         // Save to localStorage
         saveToLocalStorage();
         
-        // Show success message
+        // Update UI controls to reflect imported values
+		document.getElementById('envelope-checkbox').checked = currentSelections.envelope.custom || false;
+		document.getElementById('color-select').value = currentSelections.envelope.color || "";
+		document.getElementById('texture-select').value = currentSelections.envelope.texture || "";
+		
+		// Show success message
         alert('Quotation imported successfully!');
         
     } catch (error) {
