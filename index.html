@@ -404,6 +404,7 @@
             { id: 'acrylic-insert', name: 'Acrylic insert', price: 80, unit: 'page' },
             { id: 'deckled-edge-cut', name: 'Deckled edge cut', price: 5, unit: 'page' },
             { id: 'custom-cut', name: 'Custom cut', price: 10, unit: 'page' },
+			            { id: 'arc-cut', name: 'Arc cut', price: 5, unit: 'page' },
             { id: 'photo-print', name: 'Photo print', price: 5, unit: 'page' },
             { id: 'solid-color-print', name: 'Solid color print', price: 5, unit: 'page' },
             { id: 'vellum-jacket', name: 'Vellum jacket', price: 25, unit: 'flat' },
@@ -424,15 +425,18 @@
             { id: 'folded-insert', name: 'Folded insert', price: 5, unit: 'flat' },
             { id: 'trifold-insert', name: 'Trifold insert', price: 10, unit: 'flat' },
             { id: 'liner', name: 'Liner', price: 20, unit: 'flat' },
-            { id: 'arc-cut', name: 'Arc cut', price: 5, unit: 'page' },
 			{ id: 'decals', name: 'Decals', price: 15, unit: 'piece' },
             { id: 'gold-foil', name: 'Gold foil', price: 15, unit: 'page' },
             { id: 'silver-foil', name: 'Silver foil', price: 15, unit: 'page' },			
             { id: 'rosegold-foil', name: 'Rosegold foil', price: 15, unit: 'page' },			
             { id: 'gold-foil-full-page', name: 'Gold foil full page', price: 20, unit: 'page' },
             { id: 'silver-foil-full-page', name: 'Silver foil full page', price: 20, unit: 'page' },			
-            { id: 'rosegold-foil-full-page', name: 'Rosegold foil full page', price: 20, unit: 'page' },			
-            { id: 'envelope-print', name: 'Envelope print', price: 10, unit: 'flat' }
+            { id: 'rosegold-foil-full-page', name: 'Rosegold foil full page', price: 20, unit: 'page' },
+			{ id: 'envelope-print', name: 'Envelope print', price: 10, unit: 'flat' },
+			{ id: 'website', name: 'Website', price: 599, unit: 'flat' },
+			{ id: 'website-RSVP', name: 'Website with RSVP', price: 699, unit: 'flat' }
+            
+
         ];
         
         // List of flat add-ons that should be included in price per set (excluding Map layout)
@@ -1231,7 +1235,7 @@
             const paymentMethodCards = document.querySelectorAll('#payment-method-options .option-card');
             paymentMethodCards.forEach(card => card.classList.remove('selected'));
             paymentMethodCards[0].classList.add('selected');
-            currentSelections.paymentMethod = "none";
+            currentSelections.paymentMethod = "direct-shipping";
             
             // Reset location
             document.getElementById('location-select').value = "";
@@ -1681,7 +1685,7 @@ if (currentSelections.discount && (currentSelections.paymentMethod === "direct-s
     const paymentMethodCards = document.querySelectorAll('#payment-method-options .option-card');
     paymentMethodCards.forEach(card => card.classList.remove('selected'));
     paymentMethodCards[0].classList.add('selected');
-    currentSelections.paymentMethod = "none";
+    currentSelections.paymentMethod = "direct-shipping";
     
     // Reset location
     document.getElementById('location-select').value = "";
