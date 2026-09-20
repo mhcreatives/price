@@ -1703,6 +1703,11 @@
                     if (data.currentSelections && data.currentSelections.addons) {
                         const oldIds = ['gold-foil', 'silver-foil', 'rosegold-foil', 'gold-foil-full-page', 'silver-foil-full-page', 'rosegold-foil-full-page', 'glossy-phototop', 'matte-phototop', 'leather-phototop', 'glitter-phototop', 'website-RSVP'];
                         oldIds.forEach(id => delete data.currentSelections.addons[id]);
+                        // Drop Tassel entries saved before it became a flat add-on (Type 1/Type 2, pcs)
+                        Object.keys(data.currentSelections.addons).forEach(id => {
+                            const a = data.currentSelections.addons[id];
+                            if ((a.baseId || id) === 'tassel' && a.unit !== 'flat') delete data.currentSelections.addons[id];
+                        });
                     }
                     
                     // Restore souvenirs
