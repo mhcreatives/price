@@ -1056,8 +1056,7 @@
 			
 			document.getElementById('inserts-input').addEventListener('input', function() {
                 const insertCount = parseInt(this.value) || 0;
-                const perInsertPrice = insertCount >= 5 ? 10 : INSERT_PRICE;
-                const insertPrice = Math.min(insertCount, 4) * INSERT_PRICE + Math.max(0, insertCount - 4) * perInsertPrice;
+                const insertPrice = calculateInsertsPrice(insertCount);
                 currentSelections.inserts = { value: insertCount, price: insertPrice };
                 updateSummary();
                 saveToLocalStorage();
@@ -1329,6 +1328,11 @@
             return (rule[variantKey.toLowerCase()] || (() => 5))(pages);
         }
         
+        // First 4 inserts at INSERT_PRICE each, P10 each from the 5th onward
+        function calculateInsertsPrice(count) {
+            return Math.min(count, 4) * INSERT_PRICE + Math.max(0, count - 4) * 10;
+        }
+
         function calculateShippingFee(totalAmount) {
             // Courier base prices
             const courierPrices = { 'spx': 100, 'jnt': 150, 'lbc': 200, 'lalamove': 0 };
@@ -2548,7 +2552,7 @@ function parseCustomEnvelopeDetails(line) {
             if (insertMatch) {
                 const insertCount = parseInt(insertMatch[1]);
                 document.getElementById('inserts-input').value = insertCount;
-                currentSelections.inserts = { value: insertCount, price: insertCount * INSERT_PRICE };
+                currentSelections.inserts = { value: insertCount, price: calculateInsertsPrice(insertCount) };
                 break;
             }
         }
