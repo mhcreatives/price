@@ -533,7 +533,7 @@
             { id: 'acrylic-insert', name: 'Acrylic insert', price: 80, unit: 'page' },
             { id: 'deckled-edge-cut', name: 'Deckled edge cut', price: 5, unit: 'page' },
             { id: 'custom-cut', name: 'Custom cut', price: 10, unit: 'page' },
-			            { id: 'arc-cut', name: 'Arc cut', price: 5, unit: 'page' },
+			            { id: 'arc-cut', name: 'Arc cut', price: 5, unit: 'page', dropdown: [{label:'1',price:5},{label:'2',price:5},{label:'3',price:5},{label:'Custom',price:10}] },
             { id: 'photo-print', name: 'Photo print', price: 5, unit: 'page' },
             { id: 'solid-color-print', name: 'Solid color print', price: 5, unit: 'page', dropdown: [
                 {label:'Light', price:5, rule:'light'}, {label:'Dark', price:5, rule:'dark'}, {label:'Black', price:5, rule:'black'}
@@ -1272,6 +1272,9 @@
                     const isFrayed = addon.name === 'Frayed ribbon';
                     h += `<select class="select-input" id="ribbon-type-${key}" style="width:110px;height:38px;padding:4px 8px;line-height:1.4;font-size:0.85rem;"><option value="Satin" data-price="10" ${isFrayed?'':'selected'}>Satin</option><option value="Frayed" data-price="35" ${isFrayed?'selected':''}>Frayed</option></select>`;
                 }
+                if (baseId === 'arc-cut') {
+                    h += `<input type="text" id="arc-size-${key}" placeholder="Size (e.g. 4x6 in)" value="${(addon.customSize || '').replace(/"/g, '&quot;')}" style="flex:1;min-width:120px;height:38px;padding:4px 8px;font-size:0.85rem;display:${addon.variant === 'Custom' ? 'block' : 'none'};">`;
+                }
                 if (orig.unit === 'page') h += `<label>Pages:</label><input type="number" id="qty-${key}" value="${addon.quantity||1}" style="width:60px;text-align:center;" min="1">`;
                 else if (orig.unit === 'piece') h += `<label>Pcs:</label><input type="number" id="qty-${key}" value="${addon.quantity||1}" style="width:60px;text-align:center;" min="1">`;
                 if (baseId === 'foil' || baseId === 'envelope-print') h += `<label><input type="checkbox" id="fullpage-${key}" ${addon.fullPage?'checked':''} style="vertical-align:middle;"> Full page</label>`;
@@ -1296,6 +1299,18 @@
                     addon.variant = vs.value;
                     updateSummary(); saveToLocalStorage();
                 });
+                const arcSize = item.querySelector('#arc-size-' + key);
+                if (arcSize) {
+                    vs.addEventListener('change', function() {
+                        arcSize.style.display = this.value === 'Custom' ? 'block' : 'none';
+                        if (this.value !== 'Custom') { addon.customSize = ''; arcSize.value = ''; }
+                        updateSummary(); saveToLocalStorage();
+                    });
+                    arcSize.addEventListener('input', function() {
+                        addon.customSize = this.value.trim();
+                        updateSummary(); saveToLocalStorage();
+                    });
+                }
                 const qi = item.querySelector('input[type="number"]');
                 if (qi) qi.addEventListener('change', function() {
                     addon.quantity = Math.max(1, parseInt(this.value) || 1);
@@ -1339,7 +1354,7 @@
             Object.keys(currentSelections.addons).forEach(addonId => {
                 const addon = currentSelections.addons[addonId];
                 const getAddonDisplayName = (a) => {
-                    const base = a.variant ? (a.name === 'Tassel' ? a.variant : (a.name === 'Website' || a.name === 'Monogram') ? `${a.name} ${lcFirstIf(a.name === "Monogram", a.variant)}` : `${a.variant} ${a.name}`) : a.name;
+                    const base = a.variant ? (a.name === 'Tassel' ? a.variant : (a.name === 'Website' || a.name === 'Monogram' || a.name === 'Arc cut') ? `${a.name} ${variantText(a)}` : `${a.variant} ${a.name}`) : a.name;
                     return a.fullPage && (addon.baseId || addonId) !== 'foil' ? `Full page ${base.toLowerCase()}` : base;
                 };
                 let addonTotal = 0;
@@ -1396,8 +1411,16 @@
             return Math.min(count, 4) * INSERT_PRICE + Math.max(0, count - 4) * 10;
         }
 
-        function lcFirstIf(cond, s) {
-            return cond && s ? s.charAt(0).toLowerCase() + s.slice(1) : s;
+        // Variant text as shown after the add-on name: Monogram lowercases the first letter,
+        // Arc cut shows the typed size for Custom (e.g. "Arc cut custom (4x6 in)")
+        function variantText(a) {
+            if (a.name === 'Arc cut' && a.variant === 'Custom') {
+                return a.customSize ? `custom (${a.customSize})` : 'custom';
+            }
+            if (a.name === 'Monogram' && a.variant) {
+                return a.variant.charAt(0).toLowerCase() + a.variant.slice(1);
+            }
+            return a.variant;
         }
 
         function calculateShippingFee(totalAmount) {
@@ -1604,7 +1627,7 @@
                 } else if (addon.unit === 'flat' && !flatAddonsInPricePerSet.includes(addonId)) {
                     // Flat add-ons NOT in the price-per-set list are one-time fees
                     oneTimeFeesTotal += addon.price;
-                    const displayName = addon.fullPage ? `Full page ${addon.name.toLowerCase()}` : (addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name);
+                    const displayName = addon.fullPage ? `Full page ${addon.name.toLowerCase()}` : (addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram' || addon.name === 'Arc cut') ? `${addon.name} ${variantText(addon)}` : `${addon.variant} ${addon.name}`) : addon.name);
                     oneTimeFeesHTML += `<div class="summary-line">${displayName}${addon.variant && String(addon.variant).startsWith("₱") ? "" : ": ₱" + addon.price}</div>`;
                 }
             });
@@ -1976,7 +1999,7 @@
     
     // Get add-ons summary (included in price per set)
     let addonsInPricePerSet = '';
-    const getDisplayName = (addon) => addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name;
+    const getDisplayName = (addon) => addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram' || addon.name === 'Arc cut') ? `${addon.name} ${variantText(addon)}` : `${addon.variant} ${addon.name}`) : addon.name;
     Object.keys(currentSelections.addons).forEach(addonId => {
         const addon = currentSelections.addons[addonId];
         
@@ -2041,7 +2064,7 @@ function copyQuotation() {
     
     // Calculate add-ons total and summary
     let addonsSummary = "";
-    const getDisplayName = (addon) => addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name;
+    const getDisplayName = (addon) => addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram' || addon.name === 'Arc cut') ? `${addon.name} ${variantText(addon)}` : `${addon.variant} ${addon.name}`) : addon.name;
     
     Object.keys(currentSelections.addons).forEach(addonId => {
         const addon = currentSelections.addons[addonId];
@@ -2169,7 +2192,7 @@ if (currentSelections.discount && (currentSelections.paymentMethod === "direct-s
             oneTimeFeesText += `E-invite (${currentSelections.inserts.value} ${currentSelections.inserts.value === 1 ? 'page' : 'pages'}): ₱${eInviteTotal}\n`;
         } else if (addon.unit === 'flat' && !flatAddonsInPricePerSet.includes(addonId)) {
             // Flat add-ons NOT in the price-per-set list are one-time fees
-            const displayName = addon.fullPage ? `Full page ${addon.name.toLowerCase()}` : (addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name);
+            const displayName = addon.fullPage ? `Full page ${addon.name.toLowerCase()}` : (addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram' || addon.name === 'Arc cut') ? `${addon.name} ${variantText(addon)}` : `${addon.variant} ${addon.name}`) : addon.name);
             oneTimeFeesTotal += addon.price;
             oneTimeFeesText += `${displayName}${addon.variant && String(addon.variant).startsWith("₱") ? "" : ": ₱" + addon.price}\n`;
         }
