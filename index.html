@@ -1298,7 +1298,7 @@
             Object.keys(currentSelections.addons).forEach(addonId => {
                 const addon = currentSelections.addons[addonId];
                 const getAddonDisplayName = (a) => {
-                    const base = a.variant ? (a.name === 'Tassel' ? a.variant : a.name === 'Website' ? `${a.name} ${a.variant}` : `${a.variant} ${a.name}`) : a.name;
+                    const base = a.variant ? (a.name === 'Tassel' ? a.variant : (a.name === 'Website' || a.name === 'Monogram') ? `${a.name} ${lcFirstIf(a.name === "Monogram", a.variant)}` : `${a.variant} ${a.name}`) : a.name;
                     return a.fullPage && (addon.baseId || addonId) !== 'foil' ? `Full page ${base.toLowerCase()}` : base;
                 };
                 let addonTotal = 0;
@@ -1353,6 +1353,10 @@
         // First 4 inserts at INSERT_PRICE each, P10 each from the 5th onward
         function calculateInsertsPrice(count) {
             return Math.min(count, 4) * INSERT_PRICE + Math.max(0, count - 4) * 10;
+        }
+
+        function lcFirstIf(cond, s) {
+            return cond && s ? s.charAt(0).toLowerCase() + s.slice(1) : s;
         }
 
         function calculateShippingFee(totalAmount) {
@@ -1559,7 +1563,7 @@
                 } else if (addon.unit === 'flat' && !flatAddonsInPricePerSet.includes(addonId)) {
                     // Flat add-ons NOT in the price-per-set list are one-time fees
                     oneTimeFeesTotal += addon.price;
-                    const displayName = addon.fullPage ? `Full page ${addon.name.toLowerCase()}` : (addon.variant ? (addon.name === 'Tassel' ? addon.variant : addon.name === 'Website' ? `${addon.name} ${addon.variant}` : `${addon.variant} ${addon.name}`) : addon.name);
+                    const displayName = addon.fullPage ? `Full page ${addon.name.toLowerCase()}` : (addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name);
                     oneTimeFeesHTML += `<div class="summary-line">${displayName}${addon.variant && String(addon.variant).startsWith("₱") ? "" : ": ₱" + addon.price}</div>`;
                 }
             });
@@ -1930,7 +1934,7 @@
     
     // Get add-ons summary (included in price per set)
     let addonsInPricePerSet = '';
-    const getDisplayName = (addon) => addon.variant ? (addon.name === 'Tassel' ? addon.variant : addon.name === 'Website' ? `${addon.name} ${addon.variant}` : `${addon.variant} ${addon.name}`) : addon.name;
+    const getDisplayName = (addon) => addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name;
     Object.keys(currentSelections.addons).forEach(addonId => {
         const addon = currentSelections.addons[addonId];
         
@@ -1995,7 +1999,7 @@ function copyQuotation() {
     
     // Calculate add-ons total and summary
     let addonsSummary = "";
-    const getDisplayName = (addon) => addon.variant ? (addon.name === 'Tassel' ? addon.variant : addon.name === 'Website' ? `${addon.name} ${addon.variant}` : `${addon.variant} ${addon.name}`) : addon.name;
+    const getDisplayName = (addon) => addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name;
     
     Object.keys(currentSelections.addons).forEach(addonId => {
         const addon = currentSelections.addons[addonId];
@@ -2123,7 +2127,7 @@ if (currentSelections.discount && (currentSelections.paymentMethod === "direct-s
             oneTimeFeesText += `E-invite (${currentSelections.inserts.value} ${currentSelections.inserts.value === 1 ? 'page' : 'pages'}): ₱${eInviteTotal}\n`;
         } else if (addon.unit === 'flat' && !flatAddonsInPricePerSet.includes(addonId)) {
             // Flat add-ons NOT in the price-per-set list are one-time fees
-            const displayName = addon.fullPage ? `Full page ${addon.name.toLowerCase()}` : (addon.variant ? (addon.name === 'Tassel' ? addon.variant : addon.name === 'Website' ? `${addon.name} ${addon.variant}` : `${addon.variant} ${addon.name}`) : addon.name);
+            const displayName = addon.fullPage ? `Full page ${addon.name.toLowerCase()}` : (addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name);
             oneTimeFeesTotal += addon.price;
             oneTimeFeesText += `${displayName}${addon.variant && String(addon.variant).startsWith("₱") ? "" : ": ₱" + addon.price}\n`;
         }
