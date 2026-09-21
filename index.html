@@ -614,20 +614,23 @@
         }
         
         // === Souvenir data ===
+        // Money envelope: paper weight sets the base price, print type adds on top
+        const MONEY_ENV_PAPERS = [
+            {label: '70 gsm plain paper', base: 10},
+            {label: '120 gsm premium matte/glossy', base: 15},
+            {label: '250 gsm premium matte/glossy', base: 30}
+        ];
+        const MONEY_ENV_PRINTS = [
+            {label: 'Simple print', add: 0},
+            {label: 'With QR code', add: 5},
+            {label: 'With picture', add: 10}
+        ];
         const souvenirData = [
             {
                 id: 'money-envelope', name: 'Money Envelope', unit: 'piece',
-                options: [
-                    {label: '70 gsm plain paper - Simple print', price: 10},
-                    {label: '70 gsm plain paper - With QR code', price: 15},
-                    {label: '70 gsm plain paper - With picture', price: 20},
-                    {label: '120 gsm premium matte/glossy - Simple print', price: 15},
-                    {label: '120 gsm premium matte/glossy - With QR code', price: 20},
-                    {label: '120 gsm premium matte/glossy - With picture', price: 25},
-                    {label: '250 gsm premium matte/glossy - Simple print', price: 30},
-                    {label: '250 gsm premium matte/glossy - With QR code', price: 35},
-                    {label: '250 gsm premium matte/glossy - With picture', price: 40}
-                ]
+                options: MONEY_ENV_PAPERS.flatMap(p => MONEY_ENV_PRINTS.map(r => ({label: p.label + ' - ' + r.label, price: p.base + r.add}))),
+                papers: MONEY_ENV_PAPERS,
+                prints: MONEY_ENV_PRINTS
             },
             {
                 id: 'vow-cards', name: 'Vow Cards', unit: 'pair',
@@ -686,30 +689,60 @@
                     return `<option value="${o.label}" data-price="${o.price}">${o.label}</option>`;
                 }).join('');
                 const saved = currentSouvenirs[s.id];
-                item.innerHTML = `
-                    <span class="souvenir-name">${s.name}</span>
-                    <select class="select-input" id="souv-${s.id}" style="flex:1; min-width:200px; height:32px; font-size:0.85rem; padding:4px 8px; line-height:1.4;" onchange="updateSouvenir('${s.id}')">
+                const selStyle = 'flex:1; min-width:200px; height:32px; font-size:0.85rem; padding:4px 8px; line-height:1.4;';
+                const selectHTML = s.papers
+                    ? `<select class="select-input" id="souv-${s.id}-paper" style="${selStyle}" onchange="updateSouvenir('${s.id}')">
+                        <option value="">— Paper —</option>
+                        ${s.papers.map(p => `<option value="${p.label}">${p.label}</option>`).join('')}
+                    </select>
+                    <select class="select-input" id="souv-${s.id}-print" style="${selStyle}" onchange="updateSouvenir('${s.id}')">
+                        <option value="">— Print option —</option>
+                        ${s.prints.map(r => `<option value="${r.label}">${r.label}</option>`).join('')}
+                    </select>`
+                    : `<select class="select-input" id="souv-${s.id}" style="${selStyle}" onchange="updateSouvenir('${s.id}')">
                         <option value="">— Select —</option>
                         ${opts}
-                    </select>
+                    </select>`;
+                item.innerHTML = `
+                    <span class="souvenir-name">${s.name}</span>
+                    ${selectHTML}
                     <span style="font-size:0.85rem;">Qty:</span>
                     <input type="number" class="souvenir-qty" id="souv-qty-${s.id}" min="0" value="${saved ? saved.qty : 0}" onchange="updateSouvenir('${s.id}')" oninput="this.value = Math.max(0, parseInt(this.value) || 0)">
                     <span class="souvenir-total" id="souv-total-${s.id}">₱0</span>
                 `;
                 container.appendChild(item);
                 if (saved) {
-                    document.getElementById('souv-' + s.id).value = saved.variant;
+                    if (s.papers) {
+                        const [paper, print] = saved.variant.split(' - ');
+                        document.getElementById('souv-' + s.id + '-paper').value = paper;
+                        document.getElementById('souv-' + s.id + '-print').value = print;
+                    } else {
+                        document.getElementById('souv-' + s.id).value = saved.variant;
+                    }
                 }
             });
             recalcSouvenirs();
         }
-        
-        function updateSouvenir(id) {
+
+        // Current variant + price for a souvenir row, or null if nothing (complete) is selected
+        function getSouvenirChoice(id) {
+            const s = souvenirData.find(d => d.id === id);
+            if (s.papers) {
+                const paper = document.getElementById('souv-' + id + '-paper').value;
+                const print = document.getElementById('souv-' + id + '-print').value;
+                const o = paper && print ? s.options.find(o => o.label === paper + ' - ' + print) : null;
+                return o ? { variant: o.label, price: o.price } : null;
+            }
             const sel = document.getElementById('souv-' + id);
+            if (!sel.value) return null;
+            return { variant: sel.value, price: parseInt(sel.options[sel.selectedIndex].getAttribute('data-price')) };
+        }
+
+        function updateSouvenir(id) {
             const qty = parseInt(document.getElementById('souv-qty-' + id).value) || 0;
-            if (sel.value && qty > 0) {
-                const price = parseInt(sel.options[sel.selectedIndex].getAttribute('data-price'));
-                currentSouvenirs[id] = { variant: sel.value, price: price, qty: qty };
+            const choice = getSouvenirChoice(id);
+            if (choice && qty > 0) {
+                currentSouvenirs[id] = { variant: choice.variant, price: choice.price, qty: qty };
             } else {
                 delete currentSouvenirs[id];
             }
