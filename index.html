@@ -1163,7 +1163,7 @@
         
         function initializeAddons() {
             const picker = document.getElementById('addon-picker');
-            addonsData.forEach(addon => {
+            [...addonsData].sort((a, b) => a.name.localeCompare(b.name)).forEach(addon => {
                 const opt = document.createElement('option');
                 opt.value = addon.id;
                 opt.textContent = addon.name;
