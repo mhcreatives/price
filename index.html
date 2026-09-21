@@ -691,7 +691,8 @@
                     return `<option value="${o.label}" data-price="${o.price}">${o.label}</option>`;
                 }).join('');
                 const saved = currentSouvenirs[s.id];
-                const selStyle = 'flex:1; min-width:200px; height:32px; font-size:0.85rem; padding:4px 8px; line-height:1.4;';
+                const selStyle = 'flex:1; min-width:' + (s.papers ? '0' : '200px') + '; height:32px; font-size:0.85rem; padding:4px 8px; line-height:1.4;';
+                if (s.papers) item.style.flexWrap = 'nowrap';
                 const selectHTML = s.papers
                     ? `<select class="select-input" id="souv-${s.id}-paper" style="${selStyle}" onchange="updateSouvenir('${s.id}')">
                         <option value="">— Paper —</option>
