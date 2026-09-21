@@ -533,7 +533,7 @@
             { id: 'acrylic-insert', name: 'Acrylic insert', price: 80, unit: 'page' },
             { id: 'deckled-edge-cut', name: 'Deckled edge cut', price: 5, unit: 'page' },
             { id: 'custom-cut', name: 'Custom cut', price: 10, unit: 'page' },
-			            { id: 'arc-cut', name: 'Arc cut', price: 5, unit: 'page', dropdown: [{label:'1',price:5},{label:'2',price:5},{label:'3',price:5},{label:'Custom',price:10}] },
+			            { id: 'arc-cut', name: 'Arc cut', price: 5, unit: 'page', dropdown: [{label:'1 (4.9″x6.8″)',price:5},{label:'2 (4.2″x6.4″)',price:5},{label:'3 (3.6″x6″)',price:5},{label:'Custom',price:10}] },
             { id: 'photo-print', name: 'Photo print', price: 5, unit: 'page' },
             { id: 'solid-color-print', name: 'Solid color print', price: 5, unit: 'page', dropdown: [
                 {label:'Light', price:5, rule:'light'}, {label:'Dark', price:5, rule:'dark'}, {label:'Black', price:5, rule:'black'}
@@ -1259,6 +1259,10 @@
                 let h = `<strong style="min-width:100px;">${addon.name}</strong>`;
                 if (hasDropdown) {
                     let dd = addon.dropdown || orig.dropdown;
+                    if (baseId === 'arc-cut') {
+                        dd = orig.dropdown;
+                        if (addon.variant && !dd.some(o => o.label === addon.variant)) addon.variant = '';
+                    }
                     if (baseId === 'ribbon-addon') {
                         dd = addon.name === 'Frayed ribbon' ? RIBBON_COLORS_FRAYED : RIBBON_COLORS_SATIN;
                         if (addon.variant && !dd.includes(addon.variant)) addon.variant = '';
@@ -1267,6 +1271,10 @@
                         ? dd.map(o => `<option value="${o.label}" data-price="${o.price}">${o.label}</option>`).join('')
                         : dd.map(v => `<option value="${v}">${v}</option>`).join('');
                     h += `<select class="select-input" id="variant-${key}" style="flex:1;min-width:140px;height:38px;padding:4px 8px;line-height:1.4;font-size:0.85rem;">${opts}</select>`;
+                }
+                if (baseId === 'arc-cut') {
+                    dd = orig.dropdown;
+                    if (addon.variant && !dd.some(o => o.label === addon.variant)) addon.variant = '';
                 }
                 if (baseId === 'ribbon-addon') {
                     const isFrayed = addon.name === 'Frayed ribbon';
