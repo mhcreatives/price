@@ -556,11 +556,6 @@
             { id: 'trifold-insert', name: 'Trifold insert', price: 10, unit: 'flat' },
             { id: 'liner', name: 'Liner', price: 20, unit: 'flat' },
 			{ id: 'decals', name: 'Decals', unit: 'piece', dropdown: [{label:'₱10',price:10},{label:'₱15',price:15},{label:'₱20',price:20},{label:'₱25',price:25},{label:'₱30',price:30}] },
-			{ id: 'money-envelope', name: 'Money envelope', unit: 'piece', dropdown: [
-			    {label:'70 gsm plain paper - Simple print', price:10}, {label:'70 gsm plain paper - With QR code', price:15}, {label:'70 gsm plain paper - With picture', price:20},
-			    {label:'120 gsm premium matte/glossy - Simple print', price:15}, {label:'120 gsm premium matte/glossy - With QR code', price:20}, {label:'120 gsm premium matte/glossy - With picture', price:25},
-			    {label:'250 gsm premium matte/glossy - Simple print', price:30}, {label:'250 gsm premium matte/glossy - With QR code', price:35}, {label:'250 gsm premium matte/glossy - With picture', price:40}
-			]},
 			{ id: 'tassel', name: 'Tassel', unit: 'flat', dropdown: [{label:'Tassel 1',price:10},{label:'Tassel 2',price:35}] },
 			{ id: 'foil', name: 'Foil', price: 15, unit: 'page', dropdown: ['Gold', 'Silver', 'Rosegold'] },
             { id: 'envelope-print', name: 'Envelope print', price: 15, unit: 'piece' },
@@ -1303,7 +1298,7 @@
             Object.keys(currentSelections.addons).forEach(addonId => {
                 const addon = currentSelections.addons[addonId];
                 const getAddonDisplayName = (a) => {
-                    const base = a.variant ? (a.name === 'Tassel' ? a.variant : (a.name === 'Website' || a.name === 'Monogram' || a.name === 'Money envelope') ? `${a.name} ${lcFirstIf(a.name === "Monogram", a.variant)}` : `${a.variant} ${a.name}`) : a.name;
+                    const base = a.variant ? (a.name === 'Tassel' ? a.variant : (a.name === 'Website' || a.name === 'Monogram') ? `${a.name} ${lcFirstIf(a.name === "Monogram", a.variant)}` : `${a.variant} ${a.name}`) : a.name;
                     return a.fullPage && (addon.baseId || addonId) !== 'foil' ? `Full page ${base.toLowerCase()}` : base;
                 };
                 let addonTotal = 0;
@@ -1568,7 +1563,7 @@
                 } else if (addon.unit === 'flat' && !flatAddonsInPricePerSet.includes(addonId)) {
                     // Flat add-ons NOT in the price-per-set list are one-time fees
                     oneTimeFeesTotal += addon.price;
-                    const displayName = addon.fullPage ? `Full page ${addon.name.toLowerCase()}` : (addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram' || addon.name === 'Money envelope') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name);
+                    const displayName = addon.fullPage ? `Full page ${addon.name.toLowerCase()}` : (addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name);
                     oneTimeFeesHTML += `<div class="summary-line">${displayName}${addon.variant && String(addon.variant).startsWith("₱") ? "" : ": ₱" + addon.price}</div>`;
                 }
             });
@@ -1939,7 +1934,7 @@
     
     // Get add-ons summary (included in price per set)
     let addonsInPricePerSet = '';
-    const getDisplayName = (addon) => addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram' || addon.name === 'Money envelope') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name;
+    const getDisplayName = (addon) => addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name;
     Object.keys(currentSelections.addons).forEach(addonId => {
         const addon = currentSelections.addons[addonId];
         
@@ -2004,7 +1999,7 @@ function copyQuotation() {
     
     // Calculate add-ons total and summary
     let addonsSummary = "";
-    const getDisplayName = (addon) => addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram' || addon.name === 'Money envelope') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name;
+    const getDisplayName = (addon) => addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name;
     
     Object.keys(currentSelections.addons).forEach(addonId => {
         const addon = currentSelections.addons[addonId];
@@ -2132,7 +2127,7 @@ if (currentSelections.discount && (currentSelections.paymentMethod === "direct-s
             oneTimeFeesText += `E-invite (${currentSelections.inserts.value} ${currentSelections.inserts.value === 1 ? 'page' : 'pages'}): ₱${eInviteTotal}\n`;
         } else if (addon.unit === 'flat' && !flatAddonsInPricePerSet.includes(addonId)) {
             // Flat add-ons NOT in the price-per-set list are one-time fees
-            const displayName = addon.fullPage ? `Full page ${addon.name.toLowerCase()}` : (addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram' || addon.name === 'Money envelope') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name);
+            const displayName = addon.fullPage ? `Full page ${addon.name.toLowerCase()}` : (addon.variant ? (addon.name === 'Tassel' ? addon.variant : (addon.name === 'Website' || addon.name === 'Monogram') ? `${addon.name} ${lcFirstIf(addon.name === "Monogram", addon.variant)}` : `${addon.variant} ${addon.name}`) : addon.name);
             oneTimeFeesTotal += addon.price;
             oneTimeFeesText += `${displayName}${addon.variant && String(addon.variant).startsWith("₱") ? "" : ": ₱" + addon.price}\n`;
         }
