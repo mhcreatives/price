@@ -618,10 +618,15 @@
             {
                 id: 'money-envelope', name: 'Money Envelope', unit: 'piece',
                 options: [
-                    {label: 'Simple print', price: 10},
-                    {label: 'With QR', price: 15},
-                    {label: 'Light color', price: 15},
-                    {label: 'Dark color', price: 20}
+                    {label: '70 gsm plain paper - Simple print', price: 10},
+                    {label: '70 gsm plain paper - With QR code', price: 15},
+                    {label: '70 gsm plain paper - With picture', price: 20},
+                    {label: '120 gsm premium matte/glossy - Simple print', price: 15},
+                    {label: '120 gsm premium matte/glossy - With QR code', price: 20},
+                    {label: '120 gsm premium matte/glossy - With picture', price: 25},
+                    {label: '250 gsm premium matte/glossy - Simple print', price: 30},
+                    {label: '250 gsm premium matte/glossy - With QR code', price: 35},
+                    {label: '250 gsm premium matte/glossy - With picture', price: 40}
                 ]
             },
             {
@@ -1736,6 +1741,7 @@
                     
                     // Restore souvenirs
                     if (data.currentSouvenirs) currentSouvenirs = data.currentSouvenirs;
+                    if (currentSouvenirs['money-envelope'] && !souvenirData[0].options.some(o => o.label === currentSouvenirs['money-envelope'].variant)) delete currentSouvenirs['money-envelope'];
                     
                     // Restore passport
                     if (data.passportSelection) passportSelection = data.passportSelection;
