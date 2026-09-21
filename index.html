@@ -2125,7 +2125,7 @@ if (currentSelections.discount && (currentSelections.paymentMethod === "direct-s
             // Flat add-ons NOT in the price-per-set list are one-time fees
             const displayName = addon.fullPage ? `Full page ${addon.name.toLowerCase()}` : (addon.variant ? (addon.name === 'Tassel' ? addon.variant : addon.name === 'Website' ? `${addon.name} ${addon.variant}` : `${addon.variant} ${addon.name}`) : addon.name);
             oneTimeFeesTotal += addon.price;
-            oneTimeFeesText += `${displayName}\n`;
+            oneTimeFeesText += `${displayName}${addon.variant && String(addon.variant).startsWith("₱") ? "" : ": ₱" + addon.price}\n`;
         }
     });
     
