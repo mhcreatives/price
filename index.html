@@ -1560,7 +1560,7 @@
                     // Flat add-ons NOT in the price-per-set list are one-time fees
                     oneTimeFeesTotal += addon.price;
                     const displayName = addon.fullPage ? `Full page ${addon.name.toLowerCase()}` : (addon.variant ? (addon.name === 'Tassel' ? addon.variant : addon.name === 'Website' ? `${addon.name} ${addon.variant}` : `${addon.variant} ${addon.name}`) : addon.name);
-                    oneTimeFeesHTML += `<div class="summary-line">${displayName}</div>`;
+                    oneTimeFeesHTML += `<div class="summary-line">${displayName}${addon.variant && String(addon.variant).startsWith("₱") ? "" : ": ₱" + addon.price}</div>`;
                 }
             });
 			
