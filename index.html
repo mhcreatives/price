@@ -474,6 +474,12 @@
             </div><!-- /tab-passport -->
             <div class="tab-panel" id="tab-souvenir">
                 <h2 class="section-title">Souvenir Options</h2>
+                <div class="souvenir-item" style="background:#f0f4ff;">
+                    <span class="souvenir-name">Overall</span>
+                    <label style="font-size:0.85rem;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="souvenir-main-approved"> Approved</label>
+                    <label style="font-size:0.85rem;">Layout link:</label>
+                    <input type="text" class="text-input" id="souvenir-main-layout-link" placeholder="Paste layout link" style="flex:1;min-width:160px;height:34px;padding:4px 8px;font-size:0.85rem;">
+                </div>
                 <div id="souvenir-items"></div>
                 <button class="action-button reset-button" id="reset-souvenir-button" style="margin-top:10px; width:100%;"><i class="fas fa-redo-alt"></i> Reset Souvenirs</button>
             </div><!-- /tab-souvenir -->
@@ -687,19 +693,23 @@
         
         // Current souvenir selections: { id: { variant, price, qty } }
         let currentSouvenirs = {};
-        
+        // Per-item approved/layout-link status: { id: { approved, layoutLink } }
+        let souvenirStatus = {};
+        // Overall (main) approved/layout-link status
+        let souvenirMainStatus = { approved: false, layoutLink: '' };
+
         function renderSouvenirs() {
             const container = document.getElementById('souvenir-items');
             container.innerHTML = '';
             souvenirData.forEach(s => {
                 const item = document.createElement('div');
-                item.className = 'souvenir-item';
+                item.style.cssText = 'border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 6px; background-color: #f9f9f9; padding: 0;';
                 const opts = s.options.map(o => {
                     return `<option value="${o.label}" data-price="${o.price}">${o.label}</option>`;
                 }).join('');
                 const saved = currentSouvenirs[s.id];
                 const selStyle = 'flex:1; min-width:' + (s.papers ? '0' : '200px') + '; height:32px; font-size:0.85rem; padding:4px 8px; line-height:1.4;';
-                if (s.papers) item.style.flexWrap = 'nowrap';
+                const row1Style = s.papers ? 'flex-wrap:nowrap;' : '';
                 const selectHTML = s.papers
                     ? `<select class="select-input" id="souv-${s.id}-paper" style="${selStyle}" onchange="updateSouvenir('${s.id}')">
                         <option value="">— Paper —</option>
@@ -713,12 +723,20 @@
                         <option value="">— Select —</option>
                         ${opts}
                     </select>`;
+                const status = souvenirStatus[s.id] || { approved: false, layoutLink: '' };
                 item.innerHTML = `
-                    <span class="souvenir-name">${s.name}</span>
-                    ${selectHTML}
-                    <span style="font-size:0.85rem;">Qty:</span>
-                    <input type="number" class="souvenir-qty" id="souv-qty-${s.id}" min="0" value="${saved ? saved.qty : 0}" onchange="updateSouvenir('${s.id}')" oninput="this.value = Math.max(0, parseInt(this.value) || 0)">
-                    <span class="souvenir-total" id="souv-total-${s.id}">₱0</span>
+                    <div class="souvenir-item" style="margin-bottom:0; border:none; border-radius:4px 4px 0 0; ${row1Style}">
+                        <span class="souvenir-name">${s.name}</span>
+                        ${selectHTML}
+                        <span style="font-size:0.85rem;">Qty:</span>
+                        <input type="number" class="souvenir-qty" id="souv-qty-${s.id}" min="0" value="${saved ? saved.qty : 0}" onchange="updateSouvenir('${s.id}')" oninput="this.value = Math.max(0, parseInt(this.value) || 0)">
+                        <span class="souvenir-total" id="souv-total-${s.id}">₱0</span>
+                    </div>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:6px 10px;border-top:1px dashed #e0e0e0;">
+                        <label style="font-size:0.8rem;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="souv-approved-${s.id}" ${status.approved ? 'checked' : ''}> Approved</label>
+                        <label style="font-size:0.8rem;">Layout link:</label>
+                        <input type="text" class="text-input" id="souv-layout-link-${s.id}" placeholder="Paste layout link" value="${(status.layoutLink || '').replace(/"/g, '&quot;')}" style="flex:1;min-width:140px;height:30px;padding:4px 8px;font-size:0.8rem;">
+                    </div>
                 `;
                 container.appendChild(item);
                 if (saved) {
@@ -730,6 +748,16 @@
                         document.getElementById('souv-' + s.id).value = saved.variant;
                     }
                 }
+                document.getElementById('souv-approved-' + s.id).addEventListener('change', function() {
+                    souvenirStatus[s.id] = souvenirStatus[s.id] || { approved: false, layoutLink: '' };
+                    souvenirStatus[s.id].approved = this.checked;
+                    saveToLocalStorage();
+                });
+                document.getElementById('souv-layout-link-' + s.id).addEventListener('input', function() {
+                    souvenirStatus[s.id] = souvenirStatus[s.id] || { approved: false, layoutLink: '' };
+                    souvenirStatus[s.id].layoutLink = this.value;
+                    saveToLocalStorage();
+                });
             });
             recalcSouvenirs();
         }
@@ -1161,7 +1189,19 @@
             
             // Initialize souvenir items
             renderSouvenirs();
-            
+
+            // Overall souvenir approved/layout link
+            document.getElementById('souvenir-main-approved').checked = souvenirMainStatus.approved;
+            document.getElementById('souvenir-main-layout-link').value = souvenirMainStatus.layoutLink;
+            document.getElementById('souvenir-main-approved').addEventListener('change', function() {
+                souvenirMainStatus.approved = this.checked;
+                saveToLocalStorage();
+            });
+            document.getElementById('souvenir-main-layout-link').addEventListener('input', function() {
+                souvenirMainStatus.layoutLink = this.value;
+                saveToLocalStorage();
+            });
+
             // Reset souvenir button
             document.getElementById('reset-souvenir-button').addEventListener('click', function() {
                 currentSouvenirs = {};
@@ -1886,6 +1926,8 @@
                 numberOfSets: numberOfSets,
                 eventDate: eventDate,
                 currentSouvenirs: currentSouvenirs,
+                souvenirStatus: souvenirStatus,
+                souvenirMainStatus: souvenirMainStatus,
                 passportSelection: passportSelection,
                 passportAddons: passportAddons,
                 passportOnlyMode: passportOnlyMode,
@@ -1914,6 +1956,8 @@
                     
                     // Restore souvenirs
                     if (data.currentSouvenirs) currentSouvenirs = data.currentSouvenirs;
+                    if (data.souvenirStatus) souvenirStatus = data.souvenirStatus;
+                    if (data.souvenirMainStatus) souvenirMainStatus = data.souvenirMainStatus;
                     if (currentSouvenirs['money-envelope'] && !souvenirData[0].options.some(o => o.label === currentSouvenirs['money-envelope'].variant)) delete currentSouvenirs['money-envelope'];
                     
                     // Restore passport
