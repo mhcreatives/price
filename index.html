@@ -624,6 +624,7 @@
             document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
             document.querySelector(`.tab-btn[onclick*="${tab}"]`).classList.add('active');
             document.getElementById('tab-' + tab).classList.add('active');
+            try { localStorage.setItem('invitationCalculatorActiveTab', tab); } catch (e) {}
         }
         
         // === Souvenir data ===
@@ -1212,6 +1213,12 @@
             
             // Initialize passport tab
             setupPassport();
+
+            // Restore the tab that was active before the page was reloaded
+            try {
+                const savedTab = localStorage.getItem('invitationCalculatorActiveTab');
+                if (savedTab && document.getElementById('tab-' + savedTab)) switchTab(savedTab);
+            } catch (e) {}
             
             // Passport-only mode toggle
             document.getElementById('passport-only-mode').addEventListener('change', function() {
