@@ -497,6 +497,11 @@
                         <div class="one-time-fees" id="passport-breakdown" style="display:none; border-top: 1px dashed #cccccc; margin-top: 8px; padding-top: 8px;"></div>
                         <div class="sets-total" id="sets-total">20 sets x ₱25 each = ₱500</div>
                     </div>
+                    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;font-size:0.85rem;">
+                        <label for="custom-discount-input">Custom discount (%)</label>
+                        <input type="number" id="custom-discount-input" min="0" max="100" step="any" value="0" style="width:70px;padding:4px 6px;border:1px solid #cccccc;border-radius:3px;text-align:center;">
+                    </div>
+                    <div id="custom-discount-line" class="summary-line" style="display:none;text-align:center;margin-top:8px;"></div>
                     <div class="final-total" id="final-total">Total: ₱500</div>
                     <div class="payment-methods-section" id="payment-methods-section"></div>
                     <button class="copy-button" id="copy-button"><i class="fas fa-copy"></i> Copy Quotation Summary</button>
@@ -525,7 +530,8 @@
             rush: { required: false, type: "7" },
             paymentMethod: "direct-shipping",
             addons: {},
-            discount: false
+            discount: false,
+            customDiscount: 0
         };
         let courier = 'spx'; // spx, jnt, lbc
         let numberOfSets = 20;
@@ -1248,6 +1254,11 @@
                 saveToLocalStorage();
             });
             
+            document.getElementById('custom-discount-input').addEventListener('input', function() {
+                currentSelections.customDiscount = Math.min(100, Math.max(0, parseFloat(this.value) || 0));
+                updateSummary();
+                saveToLocalStorage();
+            });
             document.getElementById('discount-checkbox').addEventListener('change', function() {
                 currentSelections.discount = this.checked;
                 updateSummary();
@@ -1575,6 +1586,13 @@
             }
         }
         
+        // Custom discount (%) taken off the grand total; returns { percent, amount, total }
+        function applyCustomDiscount(subtotal) {
+            const percent = Math.min(100, Math.max(0, parseFloat(currentSelections.customDiscount) || 0));
+            const amount = Math.round(subtotal * percent / 100);
+            return { percent, amount, total: subtotal - amount };
+        }
+
         function roundToWholeNumber(amount) {
             return Math.round(amount);
         }
@@ -1772,8 +1790,10 @@
             const passportData = getPassportTotal();
             const passportTotal = passportData.grandTotal || 0;
             const inviContribution = passportOnlyMode ? 0 : setsTotal;
-            const finalTotal = inviContribution + oneTimeFeesTotal + souvenirTotal + passportTotal;
-            
+            const subtotal = inviContribution + oneTimeFeesTotal + souvenirTotal + passportTotal;
+            const customDiscount = applyCustomDiscount(subtotal);
+            const finalTotal = customDiscount.total;
+
             // Update display
             document.getElementById('price-per-set').textContent = `₱${totalPerSet} each`;
             document.getElementById('summary-size-line').textContent = `${currentSelections.size.name} size`;
@@ -1801,8 +1821,16 @@
                 document.getElementById('one-time-fees').style.display = 'none';
             }
             
+            const discountLineEl = document.getElementById('custom-discount-line');
+            if (customDiscount.amount > 0) {
+                discountLineEl.textContent = `Discount (${customDiscount.percent}%): -₱${customDiscount.amount}`;
+                discountLineEl.style.display = 'block';
+            } else {
+                discountLineEl.textContent = '';
+                discountLineEl.style.display = 'none';
+            }
             document.getElementById('final-total').innerHTML = `Total: ₱${finalTotal}`;
-            
+
             // Update souvenir breakdown in summary
             const souvenirBreakdown = getSouvenirBreakdown();
             const souvenirEl = document.getElementById('souvenir-breakdown');
@@ -1826,7 +1854,7 @@
             }
             
             // Update payment methods section
-            updatePaymentMethods(finalTotal, setsTotal, oneTimeFeesTotal, payableSets, freeSets);
+            updatePaymentMethods(finalTotal, setsTotal, oneTimeFeesTotal, payableSets, freeSets, subtotal);
             
             // Update mobile floating price bar
             document.getElementById('mobile-bar-price').textContent = `₱${totalPerSet} each`;
@@ -1839,10 +1867,11 @@
             document.getElementById('addons-summary').style.display = passportOnlyMode ? 'none' : '';
         }
         
-        function updatePaymentMethods(finalTotal, setsTotal, oneTimeFeesTotal, payableSets, freeSets) {
+        function updatePaymentMethods(finalTotal, setsTotal, oneTimeFeesTotal, payableSets, freeSets, subtotal = finalTotal) {
             const paymentMethodsSection = document.getElementById('payment-methods-section');
             const locationName = currentSelections.location ? locationNames[currentSelections.location] : '';
-            const shippingFee = calculateShippingFee(finalTotal);
+            // Shipping tiers use the order value before the custom discount
+            const shippingFee = calculateShippingFee(subtotal);
             const courierNames = { spx: 'SPX Express', jnt: 'J&T Express', lbc: 'LBC', lalamove: 'Lalamove' };
             const courierLabel = courierNames[courier] || 'SPX';
             const shippingLabel = courier === 'lalamove' ? 'Lalamove' : (shippingFee > 0 ? `+ ₱${shippingFee} shipping fee (${courierLabel})` : 'FREE Shipping');
@@ -1988,6 +2017,7 @@
             
             // Update discount checkbox
             document.getElementById('discount-checkbox').checked = currentSelections.discount;
+            document.getElementById('custom-discount-input').value = currentSelections.customDiscount || 0;
             
             // Update location
             document.getElementById('location-select').value = currentSelections.location;
@@ -2064,6 +2094,8 @@
             currentSelections.layout = { required: false, type: "no-layout", pages: 1 };
             currentSelections.rush = { required: false, type: "7" };
             currentSelections.discount = false;
+            currentSelections.customDiscount = 0;
+            document.getElementById('custom-discount-input').value = 0;
             
             // Reset layout and rush dropdowns
 			document.getElementById('layout-type').value = "no-layout";
@@ -2337,10 +2369,13 @@ if (currentSelections.discount && (currentSelections.paymentMethod === "direct-s
     const passportData = getPassportTotal();
     const passportTotal = passportData.grandTotal || 0;
     const inviContribution = passportOnlyMode ? 0 : setsTotal;
-    const finalTotal = inviContribution + oneTimeFeesTotal + souvenirTotal + passportTotal;
-    
+    const subtotal = inviContribution + oneTimeFeesTotal + souvenirTotal + passportTotal;
+    const customDiscount = applyCustomDiscount(subtotal);
+    const finalTotal = customDiscount.total;
+
     // Calculate payment details - NEW LOGIC: For direct shipping, subtract free sets from total
-    const shippingFee = calculateShippingFee(finalTotal);
+    // Shipping tiers use the order value before the custom discount
+    const shippingFee = calculateShippingFee(subtotal);
     const courierLabel = { spx: 'SPX Express', jnt: 'J&T Express', lbc: 'LBC', lalamove: 'Lalamove' }[courier] || 'SPX';
     const displayFreeSets = currentSelections.discount ? 0 : calculateFreeSetsForDirectShipping(numberOfSets);
     const downpayment = roundToWholeNumber(finalTotal / 2);
@@ -2419,7 +2454,12 @@ if (currentSelections.discount && (currentSelections.paymentMethod === "direct-s
         quotationText += `\n\n${passportText}`;
     }
     
-    quotationText += `\n\nTotal: ₱${finalTotal}`;
+    if (customDiscount.amount > 0) {
+        quotationText += `\n\nDiscount (${customDiscount.percent}%): -₱${customDiscount.amount}`;
+        quotationText += `\nTotal: ₱${finalTotal}`;
+    } else {
+        quotationText += `\n\nTotal: ₱${finalTotal}`;
+    }
     
     // Payment details (no header)
     quotationText += `\n\nDownpayment: ₱${downpayment}`;
@@ -2495,6 +2535,8 @@ if (currentSelections.discount && (currentSelections.paymentMethod === "direct-s
     currentSelections.layout = { required: false, type: "no-layout", pages: 1 };
     currentSelections.rush = { required: false, type: "7" };
     currentSelections.discount = false;
+    currentSelections.customDiscount = 0;
+    document.getElementById('custom-discount-input').value = 0;
     
     // Reset location
     document.getElementById('location-select').value = "";
